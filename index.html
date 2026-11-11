@@ -3,98 +3,348 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>พอตเตอร์ (Potter) | Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800;900&family=Bangers&display=swap" rel="stylesheet">
+<title>พอตเตอร์ (Potter) | Minecraft 3D Modeler & Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Supabase Client for Realtime & SQL Database support -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- Canvas for Space Dots / Starfield Background -->
 <canvas id="bg" aria-hidden="true"></canvas>
-<div class="speed" aria-hidden="true"></div>
-<div class="halftone" aria-hidden="true"></div>
-<div id="drop">วางรูปที่นี่เพื่อเพิ่มในแกลเลอรี</div>
+<div class="space-nebula" aria-hidden="true"></div>
+
+<!-- Dropzone for Drag-and-Drop Gallery Upload -->
+<div id="drop"><span data-i18n="dropText">วางรูปที่นี่เพื่อเพิ่มในแกลเลอรี</span></div>
+
+<!-- Lightbox Modal -->
 <div id="lb" role="dialog" aria-label="ดูรูปเต็ม"><img alt=""></div>
 
+<!-- Welcoming / Loading Screen Modal -->
+<div id="welcomeOverlay" class="welcome-overlay" role="dialog" aria-modal="true">
+  <div class="welcome-card">
+    <div class="welcome-badge">POTTER • PORTFOLIO</div>
+    <h2 id="welcomeTitle" class="welcome-title">ยินดีต้อนรับสู่ Portfolio ของ พอตเตอร์</h2>
+    <p id="welcomeDesc" class="welcome-desc">รับทำโมเดล Minecraft 3D (Blockbench) พัฒนามอดเกม และสร้างสรรค์ซอฟต์แวร์</p>
+
+    <div class="welcome-block">
+      <label class="block-label" id="langSelectLabel">เลือกภาษา / Select Language / Выберите язык</label>
+      <div class="lang-pills">
+        <button type="button" class="lang-pill active" data-lang="th">ไทย</button>
+        <button type="button" class="lang-pill" data-lang="en">English</button>
+        <button type="button" class="lang-pill" data-lang="ru">Русский</button>
+      </div>
+    </div>
+
+    <div class="welcome-block">
+      <label class="block-label" for="welcomeUsernameInput" id="nameInputLabel">ระบุชื่อของคุณ (สำหรับใช้ในระบบและแชต)</label>
+      <div class="input-with-check">
+        <input type="text" id="welcomeUsernameInput" maxlength="24" placeholder="กรอกชื่อหรือฉายาของคุณ..." autocomplete="off">
+        <span id="nameStatus" class="name-status"></span>
+      </div>
+      <div id="nameCheckMsg" class="name-msg"></div>
+    </div>
+
+    <div class="welcome-actions">
+      <button type="button" id="enterBtn" class="btn btn-primary enter-btn">
+        <span id="enterBtnText">เข้าสู่เว็บไซต์</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin / Supabase Manager Modal -->
+<div id="adminModal" class="modal-overlay" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="adminModalTitle">ผู้ดูแลระบบ (Admin Control & SQL)</h3>
+      <button type="button" id="closeAdminModal" class="btn-icon" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Admin Login State -->
+      <div id="adminAuthBlock">
+        <p class="muted">กรอกรหัสผ่านแอดมินเพื่อจัดการแชตและฐานข้อมูล (Default: potter2026)</p>
+        <div class="row gap-8">
+          <input type="password" id="adminPassInput" placeholder="กรอกรหัสผ่านแอดมิน...">
+          <button type="button" id="adminLoginBtn" class="btn btn-primary">เข้าสู่ระบบ</button>
+        </div>
+        <div id="adminAuthErr" class="text-danger mt-8"></div>
+      </div>
+
+      <!-- Admin Dashboard State -->
+      <div id="adminDashBlock" hidden>
+        <div class="admin-tabs">
+          <button type="button" class="admin-tab active" data-atab="chats">แชตลูกค้าทั้งหมด</button>
+          <button type="button" class="admin-tab" data-atab="sql">Supabase & SQL Config</button>
+        </div>
+
+        <div id="atabChats" class="atab-content">
+          <p class="muted">เลือกแชตของผู้ใช้ที่ต้องการดูหรือตอบกลับ:</p>
+          <div id="adminSessionList" class="session-list"></div>
+        </div>
+
+        <div id="atabSql" class="atab-content" hidden>
+          <div class="supabase-status-box">
+            <b>สถานะ Supabase: </b>
+            <span id="supabaseStatusBadge" class="badge badge-warning">โหมด Local + Discord (ยังไม่เชื่อมต่อ Supabase)</span>
+          </div>
+          <div class="form-group mt-12">
+            <label>Supabase Project URL:</label>
+            <input type="text" id="cfgSupabaseUrl" placeholder="https://xyzcompany.supabase.co">
+          </div>
+          <div class="form-group mt-8">
+            <label>Supabase Anon Public Key:</label>
+            <input type="password" id="cfgSupabaseKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+          </div>
+          <div class="row gap-8 mt-12">
+            <button type="button" id="saveSupabaseCfg" class="btn btn-primary">บันทึก & เชื่อมต่อ</button>
+            <button type="button" id="resetSupabaseCfg" class="btn btn-secondary">รีเซ็ต</button>
+          </div>
+          <div class="mt-16">
+            <p class="muted">ไฟล์ SQL Migration พร้อมใช้งานในไฟล์: <code>supabase_setup.sql</code> สามารถนำไปรันใน Supabase SQL Editor ได้ทันที</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main App Wrap -->
 <div class="wrap">
-<header class="hero">
-  <div class="hero-text">
-    <p class="hi">สวัสดีครับ ผมชื่อเล่น</p>
-    <h1 data-t="พอตเตอร์"><span>พอตเตอร์</span></h1>
-    <p class="type" id="type" aria-label="นักพัฒนาเว็บ แอป และมอดเกม"></p>
-    <span class="sfx s1" aria-hidden="true">ドン!</span>
-    <span class="sfx s2" aria-hidden="true">BOOM!</span>
-  </div>
-  <button class="card hero-card" id="heroCard" type="button"><img alt="พอตเตอร์ใส่หน้ากากสไปเดอร์แมน"><i></i></button>
-</header>
+  <!-- Top Bar with User Info & Language Selector -->
+  <header class="top-nav">
+    <div class="user-pill" id="userPill">
+      <span class="dot-online"></span>
+      <span id="currentUserNameDisplay">แขก</span>
+      <button type="button" id="changeNameBtn" class="pill-btn" title="เปลี่ยนชื่อ">แก้ไข</button>
+    </div>
 
-<div class="tabs" role="tablist" aria-label="เมนู">
-  <button class="tab" role="tab" data-t="about">เกี่ยวกับ</button>
-  <button class="tab" role="tab" data-t="projects">ผลงาน</button>
-  <button class="tab" role="tab" data-t="gallery">แกลเลอรี</button>
-  <button class="tab" role="tab" data-t="code">แจกโค้ด</button>
-  <button class="tab" role="tab" data-t="hire">รับงาน</button>
-  <button class="tab" role="tab" data-t="contact">ติดต่อ</button>
+    <div class="nav-right">
+      <div class="lang-dropdown">
+        <button type="button" id="langSwitchBtn" class="btn btn-sm btn-ghost">
+          <span id="langCurrentText">TH</span> ▾
+        </button>
+        <div id="langMenu" class="dropdown-menu" hidden>
+          <button type="button" class="menu-item" data-lang="th">ไทย (TH)</button>
+          <button type="button" class="menu-item" data-lang="en">English (EN)</button>
+          <button type="button" class="menu-item" data-lang="ru">Русский (RU)</button>
+        </div>
+      </div>
+      <button type="button" id="openAdminBtn" class="btn btn-sm btn-outline">แอดมิน</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-text">
+      <p class="hi" id="heroGreeting">สวัสดีครับ ผมชื่อเล่น</p>
+      <h1 data-t="พอตเตอร์"><span id="heroName">พอตเตอร์</span></h1>
+      <p class="type" id="type" aria-label="นักทำโมเดล 3D Minecraft • พัฒนาเว็บ แอป และมอดเกม"></p>
+      <div class="badges-row">
+        <span class="tech-badge">Minecraft 3D</span>
+        <span class="tech-badge">Blockbench</span>
+        <span class="tech-badge">Java / Forge</span>
+        <span class="tech-badge">Web & Tools</span>
+      </div>
+    </div>
+
+    <!-- Enlarged Hero Avatar Card -->
+    <div class="hero-avatar-wrap">
+      <button class="card hero-card" id="heroCard" type="button" title="คลิกเพื่อดูรูปขนาดเต็ม">
+        <img alt="พอตเตอร์ - Minecraft Modeler & Dev">
+        <div class="hero-card-glow"></div>
+        <div class="hero-card-tag">3D Modeler & Developer</div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs" role="tablist" aria-label="เมนู">
+    <button class="tab" role="tab" data-t="about" id="tab-about">เกี่ยวกับ</button>
+    <button class="tab" role="tab" data-t="projects" id="tab-projects">ผลงาน & โมเดล</button>
+    <button class="tab" role="tab" data-t="gallery" id="tab-gallery">แกลเลอรี</button>
+    <button class="tab" role="tab" data-t="hire" id="tab-hire">รับทำโมเดล & งาน</button>
+    <button class="tab" role="tab" data-t="chat" id="tab-chat">สอบถามงาน / แชต</button>
+    <button class="tab" role="tab" data-t="code" id="tab-code">แจกโค้ด</button>
+    <button class="tab" role="tab" data-t="contact" id="tab-contact">ติดต่อ</button>
+  </nav>
+
+  <main>
+    <!-- About Panel -->
+    <section class="panel" id="about" role="tabpanel">
+      <h2 id="aboutHead">เกี่ยวกับผม</h2>
+      <div class="facts">
+        <div><small id="factNameLabel">ชื่อ</small><b id="factNameVal">พัฒนพล ภักดีอำนาจ (พอตเตอร์)</b></div>
+        <div><small id="factSpecLabel">ความเชี่ยวชาญ</small><b id="factSpecVal">Minecraft 3D Modeling (Blockbench), Mod & Web Dev</b></div>
+        <div><small id="factSchoolLabel">โรงเรียน</small><b id="factSchoolVal">แก่นนครวิทยาลัย (มัธยมศึกษาปีที่ 2)</b></div>
+      </div>
+      <p class="muted" id="aboutBio">รักการสร้างสรรค์โมเดล 3D สไตล์บล็อกและม็อบแฟนตาซีสำหรับ Minecraft ควบคู่กับการพัฒนาเว็บไซต์ แอปพลิเคชัน และมอดสำหรับเซิร์ฟเวอร์ ออกแบบจริง ลงมือทำจริง และพร้อมรับงานสั่งทำคุณภาพสูง</p>
+    </section>
+
+    <!-- Projects & Models Panel -->
+    <section class="panel" id="projects" role="tabpanel" hidden>
+      <h2 id="projectsHead">ผลงาน & โมเดลที่เคยทำ</h2>
+      <ul class="proj">
+        <li>
+          <b id="p1Title">Custom Minecraft 3D Mobs & Bosses</b>
+          <em>Blockbench · ModelEngine</em>
+          <p id="p1Desc">ออกแบบโมเดลบอส อาวุธ และสัตว์ประหลาดสำหรับเซิร์ฟเวอร์ Minecraft พร้อมแอนิเมชันโจมตีและสกิล รองรับ MythicMobs และ ItemsAdder</p>
+        </li>
+        <li>
+          <b id="p2Title">มอด Minecraft Forge / Spigot Plugins</b>
+          <em>Java · Gradle</em>
+          <p id="p2Desc">มอดระบบร้านค้าในเกม มอดกู้คืนบล็อกกระจก และระบบจัดการ NPC อัจฉริยะสำหรับคอมมูนิตี้</p>
+        </li>
+        <li>
+          <b id="p3Title">SHARK Shop</b>
+          <em>Web · HTML / JS / CSS</em>
+          <p id="p3Desc">เว็บร้านค้าออนไลน์ โทนม่วง-ฟ้าโมเดิร์น รองรับหลายภาษา มีระบบจัดการสินค้าและเติมเงิน</p>
+        </li>
+        <li>
+          <b id="p4Title">AI Badminton Referee</b>
+          <em>Android · Kotlin</em>
+          <p id="p4Desc">แอปพลิเคชันกรรมการและผู้ตัดสินแบดมินตัน ใช้กล้องประมวลผลตำแหน่งลูกและนับคะแนนอัตโนมัติ</p>
+        </li>
+        <li>
+          <b id="p5Title">Potter Notify Bridge</b>
+          <em>Android + Windows</em>
+          <p id="p5Desc">ระบบส่งการแจ้งเตือนจากมือถือไปแสดงผลบนหน้าจอคอมพิวเตอร์ผ่านเครือข่ายภายในบ้าน</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Gallery Panel -->
+    <section class="panel" id="gallery" role="tabpanel" hidden>
+      <h2 id="galleryHead">แกลเลอรีรูปภาพ & โมเดล</h2>
+      <div class="bar">
+        <label class="btn btn-primary" id="galleryUploadBtn">
+          เลือกรูปเพิ่ม
+          <input type="file" id="file" accept="image/*" multiple hidden>
+        </label>
+        <button type="button" class="btn btn-secondary" id="resetGalleryBtn">รีเซ็ตรูปภาพ</button>
+        <span class="muted" id="galleryNotice">ลากรูปมาวางได้ • กดปุ่มลบเพื่อลบรูปที่ไม่ต้องการ • กดที่รูปเพื่อดูขนาดเต็ม</span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- Hire / Services Panel (Minecraft Model Focus) -->
+    <section class="panel" id="hire" role="tabpanel" hidden>
+      <h2 id="hireHead">บริการรับทำโมเดล & รับงาน</h2>
+      <div class="services">
+        <div class="service-card highlight">
+          <b id="srv1Title">โมเดล Minecraft 3D (Blockbench)</b>
+          <span id="srv1Desc">รับทำโมเดลบอส ม็อบ สัตว์ อาวุธ ชุดเกราะ ไอเทม และเฟอร์นิเจอร์ พร้อมแอนิเมชันโจมตี/เดิน รองรับ ModelEngine, MythicMobs, ItemsAdder, Java & Bedrock</span>
+        </div>
+        <div class="service-card">
+          <b id="srv2Title">มอดและปลั๊กอิน Minecraft</b>
+          <span id="srv2Desc">พัฒนา Forge / Fabric mod, Spigot / Paper plugins, ระบบเควสต์, ระบบร้านค้า และกลไกเฉพาะทางสำหรับเซิร์ฟเวอร์</span>
+        </div>
+        <div class="service-card">
+          <b id="srv3Title">พัฒนาเว็บไซต์ & เว็บร้านค้า</b>
+          <span id="srv3Desc">ทำเว็บพอร์ตโฟลิโอ เว็บร้านค้าไอเทมเกม ออกแบบ UI ทันสมัย รองรับมือถือและคอมพิวเตอร์</span>
+        </div>
+        <div class="service-card">
+          <b id="srv4Title">แอป Android & ซอฟต์แวร์ Windows</b>
+          <span id="srv4Desc">พัฒนาโปรแกรมเครื่องมือเฉพาะทาง แอปพลิเคชันด้วย Kotlin และเครื่องมือเชื่อมโยงข้อมูล</span>
+        </div>
+        <div class="service-card">
+          <b id="srv5Title">สคริปต์ & Discord Webhook Bot</b>
+          <span id="srv5Desc">เขียนสคริปต์ Python ทำงานอัตโนมัติ ระบบบอทแจ้งเตือนเข้า Discord และการเชื่อมต่อฐานข้อมูล</span>
+        </div>
+      </div>
+      <div class="hire-cta">
+        <p id="hireCtaText">สนใจสั่งงานหรือต้องการสอบถามประเมินราคา สามารถกดทักแชตในหน้านี้ได้เลยครับ</p>
+        <button type="button" class="btn btn-primary" id="goToChatBtn">ไปยังห้องแชตสอบถามงาน</button>
+      </div>
+    </section>
+
+    <!-- Live Inquiry Chat Panel -->
+    <section class="panel" id="chat" role="tabpanel" hidden>
+      <div class="chat-container">
+        <div class="chat-header">
+          <div>
+            <h2 id="chatHead" class="chat-title">สอบถามงาน & พูดคุยโดยตรง</h2>
+            <p class="muted mb-0" id="chatSubtitle">พิมพ์ข้อความสอบถามสั่งทำโมเดล Minecraft หรือปรึกษางานได้ที่นี่ ข้อความจะแจ้งเตือนเข้า Discord ของผมทันที</p>
+          </div>
+          <div class="chat-header-actions">
+            <span id="liveStatusPill" class="status-pill connected">
+              <span class="dot-online"></span>
+              <span id="liveStatusText">พร้อมส่งแจ้งเตือน Discord</span>
+            </span>
+            <button type="button" id="clearChatBtn" class="btn btn-sm btn-ghost" title="ล้างประวัติแชตของฉัน">ล้างประวัติแชต</button>
+          </div>
+        </div>
+
+        <!-- Chat messages view -->
+        <div class="chat-box" id="chatMessages"></div>
+
+        <!-- Chat input area -->
+        <form id="chatForm" class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="พิมพ์ข้อความสอบถามงาน..." maxlength="500" autocomplete="off" required>
+          <button type="submit" id="chatSendBtn" class="btn btn-primary">ส่งข้อความ</button>
+        </form>
+
+        <div class="chat-footer-note">
+          <small class="muted" id="chatNote">ระบบจะจดจำประวัติแชตของคุณไว้ และแจ้งเตือนแอดมินผ่าน Discord ทันทีเมื่อคุณส่งข้อความ</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Panel -->
+    <section class="panel" id="code" role="tabpanel" hidden>
+      <h2 id="codeHead">แจกโค้ด & ตัวอย่าง</h2>
+      <div class="code">
+        <header>
+          <span id="codeTitle">ตัวอย่างโค้ด: หน่วงเวลาใน JavaScript</span>
+          <button class="btn btn-sm" id="copy" type="button">คัดลอก</button>
+        </header>
+        <pre id="snippet">// ตัวอย่างฟังก์ชัน Promise หน่วงเวลาใน JavaScript
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function main() {
+  console.log("กำลังเชื่อมต่อไปยังเซิร์ฟเวอร์...");
+  await wait(1000);
+  console.log("เชื่อมต่อสำเร็จเรียบร้อย");
+}
+main();</pre>
+      </div>
+      <p class="muted" id="codeNote">โค้ดและไลบรารีเพิ่มเติมจะทยอยอัปเดตลงบน GitHub</p>
+    </section>
+
+    <!-- Contact Panel -->
+    <section class="panel" id="contact" role="tabpanel" hidden>
+      <h2 id="contactHead">ช่องทางการติดต่อ</h2>
+      <div class="contact-cards">
+        <div class="contact-box">
+          <b>Direct Portfolio Chat</b>
+          <p id="contactChatDesc">สอบถามงานในเว็บได้ทันทีที่แท็บแชต</p>
+          <button type="button" class="btn btn-primary" id="contactGoChat">เปิดแชตสอบถาม</button>
+        </div>
+        <div class="contact-box">
+          <b>Discord</b>
+          <p>ติดต่อพูดคุย หรือเข้าร่วมดิสคอร์ด</p>
+          <a class="btn btn-outline" href="https://discord.com" target="_blank" rel="noopener">Discord</a>
+        </div>
+        <div class="contact-box">
+          <b>GitHub</b>
+          <p>ดูโค้ดและโปรเจกต์โอเพนซอร์ส</p>
+          <a class="btn btn-outline" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 
-<main>
-<section class="panel" id="about" role="tabpanel">
-  <h2>เกี่ยวกับผม</h2>
-  <div class="facts">
-    <div><small>ชื่อ</small><b>พัฒนพล ภักดีอำนาจ (พอตเตอร์)</b></div>
-    <div><small>โรงเรียน</small><b>แก่นนครวิทยาลัย</b></div>
-    <div><small>ชั้นเรียน</small><b>มัธยมศึกษาปีที่ 2</b></div>
+<!-- Footer -->
+<footer>
+  <div class="footer-wrap">
+    <div>© 2026 พอตเตอร์ (Potter) • Minecraft 3D Modeler & Developer</div>
+    <div class="footer-sub muted">Built with care • Supabase SQL & Discord Integrated</div>
   </div>
-  <p class="muted">ชอบทำเว็บ แอป และมอดเกม ลงมือทำจริงแล้วแบ่งโค้ดให้คนอื่นใช้ต่อ</p>
-</section>
+</footer>
 
-<section class="panel" id="projects" role="tabpanel" hidden>
-  <h2>ผลงานที่เคยทำ</h2>
-  <ul class="proj">
-    <li><b>SHARK Shop</b><em>เว็บ · HTML/JS</em><p>เว็บร้านค้าออนไลน์ โทนม่วง-ฟ้า รองรับ 2 ภาษา มีระบบเติมเงิน</p></li>
-    <li><b>AI Badminton Referee</b><em>Android · Kotlin</em><p>แอปกรรมการแบดมินตันด้วยกล้องและ AI นับคะแนนอัตโนมัติ</p></li>
-    <li><b>Potter Notify Bridge</b><em>Android + Windows</em><p>ส่งแจ้งเตือนจากมือถือไปแสดงบนคอมผ่านเครือข่ายในบ้าน</p></li>
-    <li><b>มอด Minecraft (Forge)</b><em>Java</em><p>มอดร้านค้า มอดกู้คืนกระจก และมอด NPC สำหรับเซิร์ฟเวอร์</p></li>
-  </ul>
-</section>
-
-<section class="panel" id="gallery" role="tabpanel" hidden>
-  <h2>แกลเลอรี</h2>
-  <div class="bar">
-    <label class="btn">เลือกรูป<input type="file" id="file" accept="image/*" multiple hidden></label>
-    <span class="muted">ลากรูปมาวางได้ · เอาเมาส์ชี้เพื่อให้รูปสว่างและเอียง · กดเพื่อดูเต็ม</span>
-  </div>
-  <div class="grid" id="grid"></div>
-</section>
-
-<section class="panel" id="code" role="tabpanel" hidden>
-  <h2>แจกโค้ด</h2>
-  <div class="code">
-    <header><span>ตัวอย่างโค้ด</span><button class="btn" id="copy" type="button">คัดลอก</button></header>
-<pre id="snippet">// ตัวอย่าง: หน่วงเวลาแล้วทำงานต่อ
-const wait = ms => new Promise(r => setTimeout(r, ms));
-await wait(1000);
-console.log("เสร็จแล้ว");</pre>
-  </div>
-  <p class="muted">ลิงก์ GitHub และไฟล์ ZIP จะมาใส่ตรงนี้</p>
-</section>
-
-<section class="panel" id="hire" role="tabpanel" hidden>
-  <h2>รับงานอะไรบ้าง</h2>
-  <div class="services">
-    <div><b>ทำเว็บไซต์</b><span>เว็บร้านค้า เว็บแนะนำตัว</span></div>
-    <div><b>มอด Minecraft</b><span>Forge ตามที่เซิร์ฟเวอร์ต้องการ</span></div>
-    <div><b>แอป Android / Windows</b><span>เครื่องมือเฉพาะทาง</span></div>
-    <div><b>สคริปต์และบอท</b><span>Python, แจ้งเตือน Discord</span></div>
-  </div>
-</section>
-
-<section class="panel" id="contact" role="tabpanel" hidden>
-  <h2>ติดต่อ</h2>
-  <div class="links"><a class="btn" href="#contact">Discord</a><a class="btn" href="#contact">GitHub</a><a class="btn" href="#contact">Facebook</a></div>
-  <p class="muted">ใส่ลิงก์จริงทีหลัง</p>
-</section>
-</main>
-</div>
-<footer>© 2026 พอตเตอร์</footer>
 <script src="script.js"></script>
 </body>
 </html>
