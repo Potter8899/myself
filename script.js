@@ -1,15 +1,15 @@
 /**
  * Potter Portfolio & Minecraft 3D Modeler
- * Multi-language, Cosmic Space Particles, Live Chat, Supabase SQL & Discord Webhook
+ * Multi-Language, Space Canvas, Anti-Bot Registration, Two-Way Discord Ticket Bot & Supabase
  */
 
 (function () {
   "use strict";
 
-  // --- Constants & Config ---
-  const DISCORD_WEBHOOK_URL =
-    "https://discord.com/api/webhooks/1570097164334407695/sUv2lkPahdHU2lUHkeJZqRrLFooyFDBMGBc37NF1KHr45m4OR-012riYPTytXRFghhRD";
-  const ADMIN_PASSCODE = "potter2026";
+  // --- Configuration ---
+  const BOT_API_URL = "http://localhost:5000";
+  const BOT_WS_URL = "ws://localhost:5000/api/chat/ws";
+
   const RESERVED_NAMES = [
     "admin",
     "administrator",
@@ -19,9 +19,11 @@
     "moderator",
     "system",
     "root",
+    "bot",
+    "discord",
     "ผู้ดูแล",
-    "бот",
     "админ",
+    "модератор"
   ];
 
   const DEFAULT_IMAGES = [
@@ -37,7 +39,6 @@
             </linearGradient>
           </defs>
           <rect width='600' height='750' fill='url(#bgGrad)'/>
-          <!-- Cube 3D isometric representation for Minecraft model -->
           <g transform='translate(300, 360) scale(1.6)'>
             <polygon points='0,-60 60,-25 0,10 -60,-25' fill='#2de2ff' opacity='0.9'/>
             <polygon points='-60,-25 0,10 0,80 -60,45' fill='#1b94ad' opacity='0.95'/>
@@ -62,14 +63,13 @@
           </defs>
           <rect width='600' height='750' fill='url(#bgSword)'/>
           <g transform='translate(300, 350) rotate(45) scale(1.4)'>
-            <!-- Stylized Fantasy Blade -->
             <polygon points='0,-90 14,-20 6,40 -6,40 -14,-20' fill='#c084fc'/>
             <polygon points='0,-90 0,40 14,-20' fill='#e9d5ff' opacity='0.7'/>
             <rect x='-25' y='40' width='50' height='10' rx='4' fill='#2de2ff'/>
             <rect x='-7' y='50' width='14' height='40' rx='3' fill='#475569'/>
             <circle cx='0' cy='96' r='9' fill='#c084fc'/>
           </g>
-          <text x='300' y='540' font-size='26' fill='#c084fc' font-weight='bold' text-anchor='middle' font-family='sans-serif'>Custom Weapon Set</text>
+          <text x='300' y='540' font-size='26' fill='#c084fc' font-weight='bold' text-anchor='middle' font-family='sans-serif'>Custom Fantasy Weapons</text>
           <text x='300' y='575' font-size='16' fill='#94a3b8' text-anchor='middle' font-family='sans-serif'>ItemsAdder & Oraxen Ready</text>
         </svg>`),
       title: "Custom Fantasy Weapons",
@@ -90,21 +90,34 @@
       ],
       welcomeTitle: "ยินดีต้อนรับสู่ Portfolio ของ พอตเตอร์",
       welcomeDesc:
-        "ผู้เชี่ยวชาญด้านการทำโมเดล Minecraft 3D (Blockbench) พัฒนามอด และสร้างสรรค์ซอฟต์แวร์",
+        "รับทำโมเดล Minecraft 3D (Blockbench) พัฒนามอด และระบบซอฟต์แวร์",
       langSelectLabel: "เลือกภาษา / Select Language / Выберите язык",
-      nameInputLabel: "ระบุชื่อของคุณ (สำหรับใช้ในระบบและแชต)",
-      namePlaceholder: "กรอกชื่อหรือฉายาของคุณ...",
-      enterBtnText: "เข้าสู่เว็บไซต์",
-      nameAvailable: "ชื่อนี้สามารถใช้งานได้",
-      nameTaken: "ชื่อนี้ถูกใช้งานแล้ว โปรดเลือกชื่ออื่น",
+      tabRegister: "เปิดตั๋วใหม่ / สมัครสมาชิก",
+      tabLogin: "เข้าสู่ระบบ (มีบัญชีแล้ว)",
+      nameInputLabel: "ชื่อผู้ใช้ (Username) - กันชื่อซ้ำ",
+      namePlaceholder: "กรอกชื่อผู้ใช้...",
+      emailInputLabel: "อีเมลของคุณ (สำหรับติดต่อและรับแจ้งเตือน)",
+      emailPlaceholder: "name@example.com",
+      passInputLabel: "รหัสผ่าน (Password - ขั้นต่ำ 6 ตัวอักษร)",
+      passPlaceholder: "กำหนดรหัสผ่านของคุณ...",
+      antiBotLabel: "ระบบตรวจสอบความปลอดภัย (Anti-Bot Challenge)",
+      antiBotErr: "คำตอบคำนวณไม่ถูกต้อง กรุณาลองใหม่",
+      nameEmpty: "กรุณาระบุชื่อผู้ใช้",
+      nameTaken: "ชื่อผู้ใช้นี้ถูกใช้งานแล้ว โปรดเลือกชื่ออื่น",
       nameReserved: "ชื่อนี้เป็นชื่อสงวนของระบบ กรุณาใช้ชื่ออื่น",
-      nameEmpty: "กรุณาระบุชื่อก่อนเข้าใช้งาน",
+      nameAvailable: "ชื่อนี้สามารถใช้งานได้",
+      emailInvalid: "รูปแบบอีเมลไม่ถูกต้อง",
+      passShort: "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร",
+      loginNotFound: "ไม่พบบัญชีนี้ในระบบ กรุณาสมัครสมาชิกใหม่",
+      loginWrongPass: "รหัสผ่านไม่ถูกต้อง",
+      authSubmitRegister: "เข้าสู่เว็บไซต์ & เริ่มแชต",
+      authSubmitLogin: "เข้าสู่ระบบ",
       tabs: {
         about: "เกี่ยวกับ",
         projects: "ผลงาน & โมเดล",
         gallery: "แกลเลอรี",
         hire: "รับทำโมเดล & งาน",
-        chat: "สอบถามงาน / แชต",
+        chat: "สอบถามงาน / แชต Discord",
         code: "แจกโค้ด",
         contact: "ติดต่อ",
       },
@@ -128,28 +141,28 @@
       hireCtaText:
         "สนใจสั่งงานหรือต้องการสอบถามประเมินราคา สามารถกดทักแชตในหน้านี้ได้เลยครับ",
       goToChatBtn: "ไปยังห้องแชตสอบถามงาน",
-      chatHead: "สอบถามงาน & พูดคุยโดยตรง",
+      chatHead: "ระบบตั๋วสอบถามงาน & แชตสองทางกับ Discord",
       chatSubtitle:
-        "พิมพ์ข้อความสอบถามสั่งทำโมเดล Minecraft หรือปรึกษางานได้ที่นี่ ข้อความจะแจ้งเตือนเข้า Discord ของผมทันที",
+        "พิมพ์ข้อความที่นี่ ข้อความจะส่งตรงไปยังห้อง Ticket ใน Discord ของพอตเตอร์ และเมื่อพอตเตอร์พิมพ์ตอบกลับใน Discord ข้อความจะปรากฏที่นี่ทันที",
       chatInputPlaceholder: "พิมพ์ข้อความสอบถามงาน...",
       chatSendBtn: "ส่งข้อความ",
       clearChatBtn: "ล้างประวัติแชต",
       clearConfirm: "คุณต้องการลบประวัติการสนทนาทั้งหมดของคุณใช่หรือไม่?",
       chatNote:
-        "ระบบจะจดจำประวัติแชตของคุณไว้ และแจ้งเตือนแอดมินผ่าน Discord ทันทีเมื่อคุณส่งข้อความ",
-      liveStatusText: "พร้อมส่งแจ้งเตือน Discord",
+        "ระบบเชื่อมต่อโดยตรงกับ Discord Ticket Bot • แอดมินตอบกลับจาก Discord โดยตรง",
+      ticketStatusOpen: "ตั๋วเปิดอยู่ (Ticket Open)",
+      ticketStatusClosed: "ตั๋วถูกปิดแล้ว (Ticket Closed)",
+      botOnlineText: "Discord Bot พร้อมใช้งาน",
       autoWelcome:
-        "สวัสดีครับ! สนใจสั่งทำโมเดล Minecraft 3D (Blockbench, ModelEngine, MythicMobs) มอด หรือระบบเว็บ สามารถพิมพ์รายละเอียดทิ้งไว้ได้เลยครับ ข้อความจะส่งเข้า Discord ของผมทันทีครับ",
-      adminBadge: "แอดมินพอตเตอร์",
-      clientBadge: "คุณ",
+        "สวัสดีครับ! ข้อความที่คุณพิมพ์ในห้องนี้จะส่งตรงเข้าห้อง Ticket ในเซิร์ฟเวอร์ Discord ของผมทันที เมื่อผมตอบใน Discord ข้อความจะปรากฏที่นี่แบบ Realtime ครับ",
       codeHead: "แจกโค้ด & ตัวอย่าง",
       codeTitle: "ตัวอย่างโค้ด: หน่วงเวลาใน JavaScript",
       codeCopy: "คัดลอก",
       codeCopied: "คัดลอกแล้ว",
       codeNote: "โค้ดและไลบรารีเพิ่มเติมจะทยอยอัปเดตลงบน GitHub",
       contactHead: "ช่องทางการติดต่อ",
-      contactChatDesc: "สอบถามงานในเว็บได้ทันทีที่แท็บแชต",
-      contactGoChat: "เปิดแชตสอบถาม",
+      contactChatDesc: "สอบถามงานในเว็บได้ทันที ส่งตรงเข้า Discord ของพอตเตอร์",
+      contactGoChat: "เปิดแชตตั๋วสอบถาม",
       dropText: "วางรูปที่นี่เพื่อเพิ่มในแกลเลอรี",
       p1Title: "Custom Minecraft 3D Mobs & Bosses",
       p1Desc: "ออกแบบโมเดลบอส อาวุธ และสัตว์ประหลาดสำหรับเซิร์ฟเวอร์ Minecraft พร้อมแอนิเมชันโจมตีและสกิล รองรับ MythicMobs และ ItemsAdder",
@@ -169,8 +182,8 @@
       srv3Desc: "ทำเว็บพอร์ตโฟลิโอ เว็บร้านค้าไอเทมเกม ออกแบบ UI ทันสมัย รองรับมือถือและคอมพิวเตอร์",
       srv4Title: "แอป Android & ซอฟต์แวร์ Windows",
       srv4Desc: "พัฒนาโปรแกรมเครื่องมือเฉพาะทาง แอปพลิเคชันด้วย Kotlin และเครื่องมือเชื่อมโยงข้อมูล",
-      srv5Title: "สคริปต์ & Discord Webhook Bot",
-      srv5Desc: "เขียนสคริปต์ Python ทำงานอัตโนมัติ ระบบบอทแจ้งเตือนเข้า Discord และการเชื่อมต่อฐานข้อมูล",
+      srv5Title: "สคริปต์ & Discord Ticket Bot",
+      srv5Desc: "พัฒนาบอท Discord สองทาง ระบบตั๋วสอบถามงานอัตโนมัติ และการเชื่อมต่อฐานข้อมูล",
     },
     en: {
       langName: "EN",
@@ -185,19 +198,32 @@
       welcomeDesc:
         "Specialist in Minecraft 3D Modeling (Blockbench), custom mod development, and software engineering.",
       langSelectLabel: "Select Language / เลือกภาษา / Выберите язык",
-      nameInputLabel: "Enter your nickname (for chat and session)",
-      namePlaceholder: "Enter your nickname...",
-      enterBtnText: "Enter Portfolio",
-      nameAvailable: "This name is available",
-      nameTaken: "This name is already taken. Please pick another.",
-      nameReserved: "This name is reserved by the system. Please choose another.",
-      nameEmpty: "Please enter a nickname to proceed.",
+      tabRegister: "Open New Ticket / Register",
+      tabLogin: "Sign In (Existing User)",
+      nameInputLabel: "Username (Unique check)",
+      namePlaceholder: "Enter your username...",
+      emailInputLabel: "Your Email (for notifications)",
+      emailPlaceholder: "name@example.com",
+      passInputLabel: "Password (Min 6 chars)",
+      passPlaceholder: "Choose a secure password...",
+      antiBotLabel: "Security Verification (Anti-Bot Challenge)",
+      antiBotErr: "Incorrect math calculation. Please retry.",
+      nameEmpty: "Please enter a username",
+      nameTaken: "This username is already taken. Please choose another.",
+      nameReserved: "This name is reserved by the system. Please pick another.",
+      nameAvailable: "This username is available",
+      emailInvalid: "Invalid email format",
+      passShort: "Password must be at least 6 characters",
+      loginNotFound: "Account not found. Please register first.",
+      loginWrongPass: "Incorrect password",
+      authSubmitRegister: "Enter Portfolio & Start Chat",
+      authSubmitLogin: "Sign In",
       tabs: {
         about: "About",
         projects: "Works & Models",
         gallery: "Gallery",
         hire: "Commissions",
-        chat: "Inquiry Chat",
+        chat: "Discord Ticket Chat",
         code: "Code Snippets",
         contact: "Contact",
       },
@@ -221,28 +247,28 @@
       hireCtaText:
         "Interested in custom 3D models or tech development? Chat directly with me below.",
       goToChatBtn: "Open Commission Chat",
-      chatHead: "Commission & Inquiry Chat",
+      chatHead: "Discord Two-Way Ticket Chat",
       chatSubtitle:
-        "Ask questions or commission Minecraft 3D models directly here. Messages notify my Discord immediately.",
+        "Type your message here. It forwards directly into Potter's Discord ticket channel, and Potter's Discord replies appear here in real-time.",
       chatInputPlaceholder: "Type your message or project details...",
       chatSendBtn: "Send Message",
       clearChatBtn: "Clear History",
       clearConfirm: "Are you sure you want to clear your chat history?",
       chatNote:
-        "Your chat history is remembered and will notify the admin via Discord as soon as you send a message.",
-      liveStatusText: "Discord Webhook Ready",
+        "Directly connected to Discord Ticket Bot • Admin replies right from Discord",
+      ticketStatusOpen: "Ticket Open",
+      ticketStatusClosed: "Ticket Closed",
+      botOnlineText: "Discord Bot Online",
       autoWelcome:
-        "Hello! If you want to commission custom Minecraft 3D models (Blockbench, ModelEngine, MythicMobs) or dev projects, leave a message here! It goes directly to my Discord.",
-      adminBadge: "Admin Potter",
-      clientBadge: "You",
+        "Hi! Any message you type here creates a dedicated ticket in my Discord server. When I reply in Discord, you will see my message right here in real-time!",
       codeHead: "Code Snippets",
       codeTitle: "Code Snippet: Delay Promise in JavaScript",
       codeCopy: "Copy",
       codeCopied: "Copied!",
       codeNote: "More code repositories and libraries are updated on GitHub.",
       contactHead: "Contact Channels",
-      contactChatDesc: "Chat directly on the website for commission inquiries",
-      contactGoChat: "Open Chat",
+      contactChatDesc: "Chat directly on the website, forwards straight into Discord",
+      contactGoChat: "Open Ticket Chat",
       dropText: "Drop images here to add to gallery",
       p1Title: "Custom Minecraft 3D Mobs & Bosses",
       p1Desc: "Designing 3D bosses, custom fantasy mobs, and weaponry for Minecraft servers with fluid animations. Compatible with MythicMobs and ItemsAdder.",
@@ -278,19 +304,32 @@
       welcomeDesc:
         "Специалист по 3D моделированию для Minecraft (Blockbench), разработке модов и программного обеспечения.",
       langSelectLabel: "Выберите язык / Select Language / เลือกภาษา",
-      nameInputLabel: "Введите ваш никнейм (для общения в чате)",
+      tabRegister: "Новый тикет / Регистрация",
+      tabLogin: "Войти (Есть аккаунт)",
+      nameInputLabel: "Имя пользователя (Проверка уникальности)",
       namePlaceholder: "Ваш никнейм...",
-      enterBtnText: "Войти в портфолио",
-      nameAvailable: "Имя доступно",
+      emailInputLabel: "Ваш Email (для уведомлений)",
+      emailPlaceholder: "name@example.com",
+      passInputLabel: "Пароль (минимум 6 символов)",
+      passPlaceholder: "Введите пароль...",
+      antiBotLabel: "Проверка безопасности (Анти-Бот)",
+      antiBotErr: "Неверный ответ. Попробуйте еще раз.",
+      nameEmpty: "Пожалуйста, введите имя пользователя",
       nameTaken: "Это имя уже занято. Пожалуйста, выберите другое.",
-      nameReserved: "Это имя зарезервировано системой. Выберите другое.",
-      nameEmpty: "Пожалуйста, введите никнейм для продолжения.",
+      nameReserved: "Это имя зарезервировано системой.",
+      nameAvailable: "Имя свободно",
+      emailInvalid: "Некорректный формат email",
+      passShort: "Пароль должен содержать минимум 6 символов",
+      loginNotFound: "Аккаунт не найден. Пожалуйста, зарегистрируйтесь.",
+      loginWrongPass: "Неверный пароль",
+      authSubmitRegister: "Войти и начать чат",
+      authSubmitLogin: "Войти",
       tabs: {
         about: "Обо мне",
         projects: "Модели и работы",
         gallery: "Галерея",
         hire: "Заказы",
-        chat: "Чат заказов",
+        chat: "Тикет-чат Discord",
         code: "Код",
         contact: "Контакты",
       },
@@ -314,28 +353,28 @@
       hireCtaText:
         "Хотите заказать 3D модель для Minecraft? Задайте вопрос прямо в чате на сайте.",
       goToChatBtn: "Перейти в чат заказов",
-      chatHead: "Чат заказов и вопросов",
+      chatHead: "Двусторонний чат тикетов с Discord",
       chatSubtitle:
-        "Задавайте любые вопросы или заказывайте модели здесь. Сообщения сразу поступают ко мне в Discord.",
+        "Ваше сообщение поступит прямо в тикет-канал Discord Поттера, а ответы Поттера из Discord мгновенно появятся здесь в реальном времени.",
       chatInputPlaceholder: "Напишите сообщение или детали заказа...",
       chatSendBtn: "Отправить",
       clearChatBtn: "Очистить историю",
       clearConfirm: "Вы уверены, что хотите удалить историю чата?",
       chatNote:
-        "История сохраняется локально и сразу отправляет оповещение администратору в Discord.",
-      liveStatusText: "Discord Webhook активен",
+        "Прямая связь с Discord Ticket Bot • Администратор отвечает напрямую из Discord",
+      ticketStatusOpen: "Тикет открыт",
+      ticketStatusClosed: "Тикет закрыт",
+      botOnlineText: "Discord Bot онлайн",
       autoWelcome:
-        "Здравствуйте! Если вас интересует заказ 3D моделей Minecraft (Blockbench, ModelEngine, MythicMobs) или разработка, напишите сюда! Я сразу получу сообщение в Discord.",
-      adminBadge: "Админ Поттер",
-      clientBadge: "Вы",
+        "Здравствуйте! Ваши сообщения создают отдельный тикет в моем Discord сервере. Когда я отвечу в Discord, сообщение сразу появится здесь в реальном времени!",
       codeHead: "Примеры кода",
       codeTitle: "Пример: Задержка выполнения в JavaScript",
       codeCopy: "Копировать",
       codeCopied: "Скопировано",
       codeNote: "Дополнительные репозитории и код доступны на GitHub.",
       contactHead: "Контакты",
-      contactChatDesc: "Прямой чат на сайте для быстрого ответа",
-      contactGoChat: "Открыть чат",
+      contactChatDesc: "Прямой тикет-чат прямо на сайте с пересылкой в Discord",
+      contactGoChat: "Открыть тикет-чат",
       dropText: "Перетащите изображение сюда для добавления",
       p1Title: "Кастомные 3D мобы и боссы Minecraft",
       p1Desc: "3D модели боссов, мобов и фэнтезийного оружия для серверов Minecraft с боевыми анимациями. Совместимо с MythicMobs и ItemsAdder.",
@@ -363,16 +402,18 @@
   // --- App State ---
   let currentLang = localStorage.getItem("potter_portfolio_lang") || "th";
   let currentUsername = localStorage.getItem("potter_portfolio_user") || "";
+  let currentUserEmail = localStorage.getItem("potter_portfolio_email") || "";
   let sessionId =
     localStorage.getItem("potter_session_id") ||
-    "user_" + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+    "user_" + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
   localStorage.setItem("potter_session_id", sessionId);
 
-  let isAdmin = false;
-  let activeAdminSession = null;
-  let supabaseClient = null;
+  let authMode = "register"; // 'register' or 'login'
+  let mathAnswer = 0;
+  let wsSocket = null;
+  let botOnline = false;
 
-  // --- Gallery Items State ---
+  // --- Gallery State ---
   let galleryItems = [];
   try {
     const saved = localStorage.getItem("potter_gallery_items");
@@ -381,103 +422,51 @@
     galleryItems = DEFAULT_IMAGES.slice();
   }
 
-  // --- Registered Users Registry (to prevent duplicates) ---
-  function getRegisteredUsers() {
+  // --- Accounts Registry (Anti-duplicate & Anti-Bot) ---
+  function getRegisteredAccounts() {
     try {
-      const list = JSON.parse(localStorage.getItem("potter_registered_users") || "[]");
+      const list = JSON.parse(localStorage.getItem("potter_accounts") || "[]");
       return Array.isArray(list) ? list : [];
     } catch (e) {
       return [];
     }
   }
 
-  function registerUser(name, sessId) {
-    const users = getRegisteredUsers();
-    const existing = users.find(
-      (u) => u.name.toLowerCase() === name.toLowerCase() && u.sessionId !== sessId
-    );
-    if (!existing) {
-      const idx = users.findIndex((u) => u.sessionId === sessId);
-      if (idx >= 0) {
-        users[idx].name = name;
-        users[idx].updated = Date.now();
-      } else {
-        users.push({ name, sessionId: sessId, created: Date.now() });
-      }
-      localStorage.setItem("potter_registered_users", JSON.stringify(users));
-    }
+  function saveRegisteredAccounts(list) {
+    try {
+      localStorage.setItem("potter_accounts", JSON.stringify(list));
+    } catch (e) {}
   }
 
-  function isUsernameTaken(name, currentSessId) {
+  function isUsernameTaken(name) {
     const clean = name.trim().toLowerCase();
     if (!clean) return { taken: false, reason: "empty" };
-    if (RESERVED_NAMES.includes(clean)) {
-      return { taken: true, reason: "reserved" };
-    }
-    const users = getRegisteredUsers();
-    const found = users.find(
-      (u) => u.name.toLowerCase() === clean && u.sessionId !== currentSessId
-    );
-    if (found) {
+    if (RESERVED_NAMES.includes(clean)) return { taken: true, reason: "reserved" };
+
+    const accounts = getRegisteredAccounts();
+    const found = accounts.find((a) => a.username.toLowerCase() === clean);
+    if (found && found.username.toLowerCase() !== currentUsername.toLowerCase()) {
       return { taken: true, reason: "duplicate" };
     }
     return { taken: false };
   }
 
-  // --- Supabase Config & Init ---
-  function initSupabase() {
-    const url = localStorage.getItem("potter_supabase_url");
-    const key = localStorage.getItem("potter_supabase_key");
-    const badge = document.getElementById("supabaseStatusBadge");
-
-    if (url && key && window.supabase && window.supabase.createClient) {
-      try {
-        supabaseClient = window.supabase.createClient(url, key);
-        if (badge) {
-          badge.className = "badge badge-success";
-          badge.textContent = "เชื่อมต่อ Supabase สำเร็จ (Realtime & SQL Active)";
-        }
-        setupSupabaseRealtime();
-      } catch (err) {
-        console.warn("Supabase init error:", err);
-        if (badge) {
-          badge.className = "badge badge-warning";
-          badge.textContent = "เชื่อมต่อ Supabase ล้มเหลว (ตรวจสอบ URL/Key)";
-        }
-      }
-    } else {
-      if (badge) {
-        badge.className = "badge badge-warning";
-        badge.textContent = "โหมด Local + Discord (ยังไม่เชื่อมต่อ Supabase)";
-      }
-    }
+  // --- Anti-Bot Math Question Generator ---
+  function generateMathQuestion() {
+    const n1 = Math.floor(Math.random() * 9) + 1;
+    const n2 = Math.floor(Math.random() * 9) + 1;
+    mathAnswer = n1 + n2;
+    const box = document.getElementById("mathQuestionBox");
+    if (box) box.textContent = `คำนวณ: ${n1} + ${n2} = ?`;
+    const input = document.getElementById("antiBotInput");
+    if (input) input.value = "";
+    const msg = document.getElementById("antiBotMsg");
+    if (msg) msg.textContent = "";
   }
 
-  function setupSupabaseRealtime() {
-    if (!supabaseClient) return;
-    try {
-      supabaseClient
-        .channel("public:chat_messages")
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "chat_messages" },
-          (payload) => {
-            const msg = payload.new;
-            if (!msg) return;
-            // If belongs to current active session, append to chat view
-            const targetSess = isAdmin ? activeAdminSession : sessionId;
-            if (msg.session_id === targetSess) {
-              appendChatMessage(msg, false);
-            }
-          }
-        )
-        .subscribe();
-    } catch (e) {
-      console.warn("Supabase realtime subscribe error:", e);
-    }
-  }
+  document.getElementById("refreshMathBtn")?.addEventListener("click", generateMathQuestion);
 
-  // --- Interactive Space Dots & Canvas Background ---
+  // --- Interactive Space Dots Canvas Background ---
   const canvas = document.getElementById("bg");
   const ctx = canvas.getContext("2d");
   let W = innerWidth;
@@ -498,7 +487,7 @@
   const STAR_COLORS = ["#ffffff", "#d0f4ff", "#2de2ff", "#c4b5fd", "#fdf2f8"];
 
   function createStar() {
-    const depth = Math.random(); // 0 (far) to 1 (near)
+    const depth = Math.random();
     return {
       x: Math.random() * W,
       y: Math.random() * H,
@@ -525,13 +514,12 @@
       y: Math.random() * (H * 0.3),
       length: 80 + Math.random() * 90,
       speed: 12 + Math.random() * 10,
-      angle: (Math.PI / 4) + (Math.random() - 0.5) * 0.2,
+      angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
       alpha: 1,
       fade: 0.02 + Math.random() * 0.02,
     });
   }
 
-  // Interval for random subtle shooting stars
   setInterval(() => {
     if (Math.random() > 0.4 && meteors.length < 2) {
       spawnMeteor();
@@ -541,13 +529,11 @@
   function renderStars() {
     ctx.clearRect(0, 0, W, H);
 
-    // Smooth mouse parallax
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
     const offsetX = (mouse.x - W / 2) * 0.03;
     const offsetY = (mouse.y - H / 2) * 0.03;
 
-    // Draw stars
     for (let i = 0; i < stars.length; i++) {
       const s = stars[i];
       s.phase += s.twinkleSpeed;
@@ -563,7 +549,6 @@
       ctx.arc(px, py, s.r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Subtle glow for closest stars
       if (s.depth > 0.85) {
         ctx.shadowColor = s.color;
         ctx.shadowBlur = 6;
@@ -572,7 +557,6 @@
       ctx.restore();
     }
 
-    // Draw meteors (shooting stars)
     for (let i = meteors.length - 1; i >= 0; i--) {
       const m = meteors[i];
       const ex = m.x + Math.cos(m.angle) * m.length;
@@ -611,13 +595,12 @@
     resizeCanvas();
     initStarfield();
   });
-
   window.addEventListener("pointermove", (e) => {
     mouse.tx = e.clientX;
     mouse.ty = e.clientY;
   });
 
-  // Stardust effect on click
+  // Stardust click effect
   window.addEventListener("pointerdown", (e) => {
     for (let k = 0; k < 7; k++) {
       const p = document.createElement("div");
@@ -654,34 +637,44 @@
     const t = I18N[lang];
     document.documentElement.lang = lang;
 
-    // Update Language Dropdown Button Text
-    const langCur = document.getElementById("langCurrentText");
-    if (langCur) langCur.textContent = t.langName;
-
-    // Update Welcome Modal Text
     const setSafe = (id, text) => {
       const el = document.getElementById(id);
       if (el) el.textContent = text;
     };
 
+    const langCur = document.getElementById("langCurrentText");
+    if (langCur) langCur.textContent = t.langName;
+
+    // Welcome Form
     setSafe("welcomeTitle", t.welcomeTitle);
     setSafe("welcomeDesc", t.welcomeDesc);
     setSafe("langSelectLabel", t.langSelectLabel);
+    setSafe("tabModeRegister", t.tabRegister);
+    setSafe("tabModeLogin", t.tabLogin);
     setSafe("nameInputLabel", t.nameInputLabel);
-    const winp = document.getElementById("welcomeUsernameInput");
-    if (winp) winp.placeholder = t.namePlaceholder;
-    setSafe("enterBtnText", t.enterBtnText);
+    setSafe("emailInputLabel", t.emailInputLabel);
+    setSafe("passInputLabel", t.passInputLabel);
+    setSafe("antiBotLabel", t.antiBotLabel);
+    setSafe(
+      "authSubmitText",
+      authMode === "register" ? t.authSubmitRegister : t.authSubmitLogin
+    );
 
-    // Update Hero
+    const uInp = document.getElementById("authUsernameInput");
+    if (uInp) uInp.placeholder = t.namePlaceholder;
+    const eInp = document.getElementById("authEmailInput");
+    if (eInp) eInp.placeholder = t.emailPlaceholder;
+    const pInp = document.getElementById("authPassInput");
+    if (pInp) pInp.placeholder = t.passPlaceholder;
+
+    // Hero & Tabs
     setSafe("heroGreeting", t.heroGreeting);
     setSafe("heroName", t.heroName);
-
-    // Update Tabs
     Object.keys(t.tabs).forEach((key) => {
       setSafe(`tab-${key}`, t.tabs[key]);
     });
 
-    // Update About
+    // About & Projects
     setSafe("aboutHead", t.aboutHead);
     setSafe("factNameLabel", t.factNameLabel);
     setSafe("factNameVal", t.factNameVal);
@@ -691,7 +684,6 @@
     setSafe("factSchoolVal", t.factSchoolVal);
     setSafe("aboutBio", t.aboutBio);
 
-    // Update Projects
     setSafe("projectsHead", t.projectsHead);
     setSafe("p1Title", t.p1Title);
     setSafe("p1Desc", t.p1Desc);
@@ -704,7 +696,7 @@
     setSafe("p5Title", t.p5Title);
     setSafe("p5Desc", t.p5Desc);
 
-    // Update Gallery
+    // Gallery
     setSafe("galleryHead", t.galleryHead);
     setSafe("galleryNotice", t.galleryNotice);
     setSafe("resetGalleryBtn", t.resetGalleryBtn);
@@ -715,7 +707,7 @@
       if (inp) gUp.appendChild(inp);
     }
 
-    // Update Services / Hire
+    // Services
     setSafe("hireHead", t.hireHead);
     setSafe("hireCtaText", t.hireCtaText);
     setSafe("goToChatBtn", t.goToChatBtn);
@@ -730,17 +722,16 @@
     setSafe("srv5Title", t.srv5Title);
     setSafe("srv5Desc", t.srv5Desc);
 
-    // Update Live Chat
+    // Chat
     setSafe("chatHead", t.chatHead);
     setSafe("chatSubtitle", t.chatSubtitle);
     setSafe("chatSendBtn", t.chatSendBtn);
     setSafe("clearChatBtn", t.clearChatBtn);
     setSafe("chatNote", t.chatNote);
-    setSafe("liveStatusText", t.liveStatusText);
     const chatInput = document.getElementById("chatInput");
     if (chatInput) chatInput.placeholder = t.chatInputPlaceholder;
 
-    // Update Code & Contact
+    // Code & Contact
     setSafe("codeHead", t.codeHead);
     setSafe("codeTitle", t.codeTitle);
     setSafe("copy", t.codeCopy);
@@ -749,23 +740,20 @@
     setSafe("contactChatDesc", t.contactChatDesc);
     setSafe("contactGoChat", t.contactGoChat);
 
-    // Dropzone text
     const dropEl = document.getElementById("drop");
     if (dropEl) {
       const span = dropEl.querySelector("span");
       if (span) span.textContent = t.dropText;
     }
 
-    // Restart Typing Animation for New Language
     startTypingAnimation(t.typeStrings);
 
-    // Sync Active Lang Pills in Welcome Modal
     document.querySelectorAll(".lang-pill").forEach((pill) => {
       pill.classList.toggle("active", pill.dataset.lang === lang);
     });
   }
 
-  // --- Typing Effect in Hero ---
+  // --- Hero Typing Effect ---
   let typingTimer = null;
   function startTypingAnimation(strings) {
     if (typingTimer) clearTimeout(typingTimer);
@@ -789,7 +777,7 @@
       let speed = isDeleting ? 30 : 65;
 
       if (!isDeleting && charIdx === current.length) {
-        speed = 2200; // Hold at end
+        speed = 2200;
         isDeleting = true;
       } else if (isDeleting && charIdx === 0) {
         isDeleting = false;
@@ -824,21 +812,12 @@
     t.addEventListener("click", () => {
       location.hash = t.dataset.t;
     });
-    t.addEventListener("keydown", (e) => {
-      const n = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-      if (n) {
-        const next = tabs[(i + n + tabs.length) % tabs.length];
-        next.focus();
-        location.hash = next.dataset.t;
-      }
-    });
   });
 
   window.addEventListener("hashchange", () => {
     showTab(location.hash.slice(1));
   });
 
-  // External buttons that switch tabs
   document.getElementById("goToChatBtn")?.addEventListener("click", () => {
     location.hash = "chat";
   });
@@ -846,7 +825,7 @@
     location.hash = "chat";
   });
 
-  // --- Gallery & Visible Cards with Deletion ---
+  // --- Gallery with Delete Button ---
   const grid = document.getElementById("grid");
   const lb = document.getElementById("lb");
   const lbi = lb.querySelector("img");
@@ -863,9 +842,7 @@
   function saveGallery() {
     try {
       localStorage.setItem("potter_gallery_items", JSON.stringify(galleryItems));
-    } catch (e) {
-      console.warn("Could not save gallery to localStorage", e);
-    }
+    } catch (e) {}
   }
 
   function renderGallery() {
@@ -883,7 +860,6 @@
       img.loading = "lazy";
       card.appendChild(img);
 
-      // Tag
       if (item.title) {
         const tag = document.createElement("span");
         tag.className = "tag";
@@ -891,7 +867,7 @@
         card.appendChild(tag);
       }
 
-      // Delete Button (Allows user to remove any image from gallery)
+      // Delete Button
       const delBtn = document.createElement("button");
       delBtn.className = "card-delete-btn";
       delBtn.type = "button";
@@ -910,7 +886,6 @@
 
       card.appendChild(delBtn);
 
-      // Open Lightbox on Card Click
       card.addEventListener("click", () => {
         lbi.src = item.src;
         lb.classList.add("on");
@@ -941,20 +916,17 @@
     location.hash = "gallery";
   }
 
-  // Reset Gallery
   document.getElementById("resetGalleryBtn")?.addEventListener("click", () => {
     galleryItems = DEFAULT_IMAGES.slice();
     saveGallery();
     renderGallery();
   });
 
-  // File Upload
   document.getElementById("file")?.addEventListener("change", (e) => {
     addImagesToGallery(e.target.files);
     e.target.value = "";
   });
 
-  // Drag and Drop
   const drop = document.getElementById("drop");
   ["dragenter", "dragover"].forEach((ev) => {
     window.addEventListener(ev, (e) => {
@@ -973,167 +945,272 @@
     }
   });
 
-  // Lightbox close
   lb.addEventListener("click", () => lb.classList.remove("on"));
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") lb.classList.remove("on");
   });
 
-  // --- Welcoming / Loading Screen & Unique Username Flow ---
-  const welcomeOverlay = document.getElementById("welcomeOverlay");
-  const welcomeInput = document.getElementById("welcomeUsernameInput");
-  const nameStatus = document.getElementById("nameStatus");
-  const nameCheckMsg = document.getElementById("nameCheckMsg");
-  const enterBtn = document.getElementById("enterBtn");
-  const currentUserNameDisplay = document.getElementById("currentUserNameDisplay");
+  // --- Auth Switcher: Register / Login Tabs ---
+  const tabModeRegister = document.getElementById("tabModeRegister");
+  const tabModeLogin = document.getElementById("tabModeLogin");
+  const emailBlock = document.getElementById("emailBlock");
+  const antiBotBlock = document.getElementById("antiBotBlock");
+  const authSubmitText = document.getElementById("authSubmitText");
 
-  function validateUsername(val) {
+  tabModeRegister?.addEventListener("click", () => {
+    authMode = "register";
+    tabModeRegister.classList.add("active");
+    tabModeLogin.classList.remove("active");
+    if (emailBlock) emailBlock.hidden = false;
+    if (antiBotBlock) antiBotBlock.hidden = false;
     const t = I18N[currentLang] || I18N.th;
-    const trimmed = val.trim();
-
-    if (!trimmed) {
-      nameCheckMsg.className = "name-msg err";
-      nameCheckMsg.textContent = t.nameEmpty;
-      enterBtn.disabled = true;
-      return false;
-    }
-
-    const check = isUsernameTaken(trimmed, sessionId);
-    if (check.taken) {
-      nameCheckMsg.className = "name-msg err";
-      nameCheckMsg.textContent =
-        check.reason === "reserved" ? t.nameReserved : t.nameTaken;
-      enterBtn.disabled = true;
-      return false;
-    }
-
-    nameCheckMsg.className = "name-msg ok";
-    nameCheckMsg.textContent = t.nameAvailable;
-    enterBtn.disabled = false;
-    return true;
-  }
-
-  if (welcomeInput) {
-    welcomeInput.addEventListener("input", (e) => {
-      validateUsername(e.target.value);
-    });
-
-    welcomeInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !enterBtn.disabled) {
-        enterBtn.click();
-      }
-    });
-  }
-
-  // Language Pills in Welcome Modal
-  document.querySelectorAll(".lang-pill").forEach((pill) => {
-    pill.addEventListener("click", () => {
-      const l = pill.dataset.lang;
-      applyLanguage(l);
-      if (welcomeInput && welcomeInput.value) {
-        validateUsername(welcomeInput.value);
-      }
-    });
+    if (authSubmitText) authSubmitText.textContent = t.authSubmitRegister;
+    generateMathQuestion();
   });
 
-  // Enter Button in Welcome Modal
-  enterBtn?.addEventListener("click", () => {
-    const chosen = (welcomeInput ? welcomeInput.value : "").trim();
-    if (!validateUsername(chosen)) return;
+  tabModeLogin?.addEventListener("click", () => {
+    authMode = "login";
+    tabModeLogin.classList.add("active");
+    tabModeRegister.classList.remove("active");
+    if (emailBlock) emailBlock.hidden = true;
+    if (antiBotBlock) antiBotBlock.hidden = true;
+    const t = I18N[currentLang] || I18N.th;
+    if (authSubmitText) authSubmitText.textContent = t.authSubmitLogin;
+  });
 
-    currentUsername = chosen;
-    localStorage.setItem("potter_portfolio_user", currentUsername);
-    registerUser(currentUsername, sessionId);
+  // --- Auth Form Submit with Strict Validation & Anti-Bot ---
+  const authForm = document.getElementById("authForm");
+  const authUsernameInput = document.getElementById("authUsernameInput");
+  const authEmailInput = document.getElementById("authEmailInput");
+  const authPassInput = document.getElementById("authPassInput");
+  const antiBotInput = document.getElementById("antiBotInput");
+  const hpWebsiteCheck = document.getElementById("hpWebsiteCheck");
 
-    // Save user to Supabase if connected
-    if (supabaseClient) {
-      supabaseClient
-        .from("chat_users")
-        .upsert({
-          username: currentUsername,
-          session_id: sessionId,
-          language: currentLang,
-          last_active: new Date().toISOString(),
-        })
-        .then(() => {})
-        .catch((e) => console.warn("Supabase user upsert error:", e));
+  const usernameCheckMsg = document.getElementById("usernameCheckMsg");
+  const emailCheckMsg = document.getElementById("emailCheckMsg");
+  const passCheckMsg = document.getElementById("passCheckMsg");
+  const antiBotMsg = document.getElementById("antiBotMsg");
+  const welcomeOverlay = document.getElementById("welcomeOverlay");
+
+  // Real-time username check on input
+  authUsernameInput?.addEventListener("input", (e) => {
+    const t = I18N[currentLang] || I18N.th;
+    const val = e.target.value.trim();
+
+    if (!val) {
+      usernameCheckMsg.className = "name-msg err";
+      usernameCheckMsg.textContent = t.nameEmpty;
+      return;
+    }
+
+    if (authMode === "register") {
+      const check = isUsernameTaken(val);
+      if (check.taken) {
+        usernameCheckMsg.className = "name-msg err";
+        usernameCheckMsg.textContent =
+          check.reason === "reserved" ? t.nameReserved : t.nameTaken;
+      } else {
+        usernameCheckMsg.className = "name-msg ok";
+        usernameCheckMsg.textContent = t.nameAvailable;
+      }
+    } else {
+      usernameCheckMsg.textContent = "";
+    }
+  });
+
+  authForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const t = I18N[currentLang] || I18N.th;
+
+    // 1. Anti-Bot Honeypot Trap Check
+    if (hpWebsiteCheck && hpWebsiteCheck.value) {
+      console.warn("Bot detected via honeypot trap.");
+      return;
+    }
+
+    const username = (authUsernameInput ? authUsernameInput.value : "").trim();
+    const email = (authEmailInput ? authEmailInput.value : "").trim();
+    const password = (authPassInput ? authPassInput.value : "").trim();
+
+    // Reset error messages
+    usernameCheckMsg.textContent = "";
+    emailCheckMsg.textContent = "";
+    passCheckMsg.textContent = "";
+    antiBotMsg.textContent = "";
+
+    // 2. Validate Username
+    if (!username) {
+      usernameCheckMsg.className = "name-msg err";
+      usernameCheckMsg.textContent = t.nameEmpty;
+      authUsernameInput.focus();
+      return;
+    }
+
+    // 3. Mode: Register
+    if (authMode === "register") {
+      const check = isUsernameTaken(username);
+      if (check.taken) {
+        usernameCheckMsg.className = "name-msg err";
+        usernameCheckMsg.textContent =
+          check.reason === "reserved" ? t.nameReserved : t.nameTaken;
+        authUsernameInput.focus();
+        return;
+      }
+
+      // Email Format Check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        emailCheckMsg.className = "name-msg err";
+        emailCheckMsg.textContent = t.emailInvalid;
+        authEmailInput.focus();
+        return;
+      }
+
+      // Password Length Check
+      if (!password || password.length < 6) {
+        passCheckMsg.className = "name-msg err";
+        passCheckMsg.textContent = t.passShort;
+        authPassInput.focus();
+        return;
+      }
+
+      // Anti-Bot Math Puzzle Check
+      const answerGiven = parseInt(antiBotInput ? antiBotInput.value : "", 10);
+      if (isNaN(answerGiven) || answerGiven !== mathAnswer) {
+        antiBotMsg.className = "name-msg err";
+        antiBotMsg.textContent = t.antiBotErr;
+        generateMathQuestion();
+        antiBotInput.focus();
+        return;
+      }
+
+      // Register Account
+      const accounts = getRegisteredAccounts();
+      accounts.push({
+        username: username,
+        email: email,
+        password: password,
+        sessionId: sessionId,
+        created: Date.now(),
+      });
+      saveRegisteredAccounts(accounts);
+
+      currentUsername = username;
+      currentUserEmail = email;
+      localStorage.setItem("potter_portfolio_user", currentUsername);
+      localStorage.setItem("potter_portfolio_email", currentUserEmail);
+
+      // Create Ticket in Discord Bot
+      createTicketInDiscordBot(username, email, "เปิดตั๋วสอบถามงานใหม่จากหน้าเว็บไซต์");
+    } else {
+      // 4. Mode: Login
+      const accounts = getRegisteredAccounts();
+      const account = accounts.find(
+        (a) => a.username.toLowerCase() === username.toLowerCase()
+      );
+
+      if (!account) {
+        usernameCheckMsg.className = "name-msg err";
+        usernameCheckMsg.textContent = t.loginNotFound;
+        return;
+      }
+
+      if (account.password !== password) {
+        passCheckMsg.className = "name-msg err";
+        passCheckMsg.textContent = t.loginWrongPass;
+        return;
+      }
+
+      currentUsername = account.username;
+      currentUserEmail = account.email;
+      if (account.sessionId) sessionId = account.sessionId;
+      localStorage.setItem("potter_portfolio_user", currentUsername);
+      localStorage.setItem("potter_portfolio_email", currentUserEmail);
+      localStorage.setItem("potter_session_id", sessionId);
     }
 
     updateUserDisplay();
 
-    // Smoothly close overlay
+    // Close Overlay with smooth fade
     welcomeOverlay.classList.add("hide");
     setTimeout(() => {
       welcomeOverlay.style.display = "none";
     }, 400);
 
-    // Check if initial chat welcome message exists
+    // Initialize Two-Way Discord WebSocket connection
+    connectDiscordBotWS();
     ensureInitialChatGreeting();
   });
 
   function updateUserDisplay() {
-    if (currentUserNameDisplay) {
-      currentUserNameDisplay.textContent = currentUsername || "แขก";
+    const disp = document.getElementById("currentUserNameDisplay");
+    if (disp) {
+      disp.textContent = currentUsername
+        ? `${currentUsername} (${currentUserEmail || "User"})`
+        : "แขก";
     }
   }
 
-  // Change name button in top navbar
-  document.getElementById("changeNameBtn")?.addEventListener("click", () => {
+  // Switch User / Logout button
+  document.getElementById("switchUserBtn")?.addEventListener("click", () => {
     if (welcomeOverlay) {
       welcomeOverlay.style.display = "grid";
       welcomeOverlay.classList.remove("hide");
-      if (welcomeInput) {
-        welcomeInput.value = currentUsername;
-        validateUsername(currentUsername);
-        welcomeInput.focus();
-      }
+      generateMathQuestion();
+      if (authUsernameInput) authUsernameInput.value = currentUsername;
     }
   });
 
-  // Language switch dropdown in top navbar
+  // Language Pills in Welcome Modal
+  document.querySelectorAll(".lang-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      applyLanguage(pill.dataset.lang);
+    });
+  });
+
+  // Language dropdown in nav
   const langSwitchBtn = document.getElementById("langSwitchBtn");
   const langMenu = document.getElementById("langMenu");
-
   langSwitchBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     langMenu.hidden = !langMenu.hidden;
   });
-
   document.querySelectorAll(".menu-item").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const l = btn.dataset.lang;
-      applyLanguage(l);
+      applyLanguage(btn.dataset.lang);
       langMenu.hidden = true;
     });
   });
-
   window.addEventListener("click", () => {
     if (langMenu) langMenu.hidden = true;
   });
 
-  // --- Live Inquiry Chat System ---
+  // --- Two-Way Discord Ticket Bot Integration ---
   const chatMessagesEl = document.getElementById("chatMessages");
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
   const clearChatBtn = document.getElementById("clearChatBtn");
+  const ticketStatusBadge = document.getElementById("ticketStatusBadge");
+  const ticketStatusText = document.getElementById("ticketStatusText");
+  const botLiveBadge = document.getElementById("botLiveBadge");
 
-  function getSessionMessages(sessId) {
+  function getSessionMessages() {
     try {
-      const stored = localStorage.getItem(`potter_chat_msgs_${sessId}`);
+      const stored = localStorage.getItem(`potter_chat_msgs_${sessionId}`);
       return stored ? JSON.parse(stored) : [];
     } catch (e) {
       return [];
     }
   }
 
-  function saveSessionMessages(sessId, msgs) {
+  function saveSessionMessages(msgs) {
     try {
-      localStorage.setItem(`potter_chat_msgs_${sessId}`, JSON.stringify(msgs));
+      localStorage.setItem(`potter_chat_msgs_${sessionId}`, JSON.stringify(msgs));
     } catch (e) {}
   }
 
   function ensureInitialChatGreeting() {
-    const msgs = getSessionMessages(sessionId);
+    const msgs = getSessionMessages();
     if (msgs.length === 0) {
       const t = I18N[currentLang] || I18N.th;
       const initial = {
@@ -1145,22 +1222,16 @@
         created_at: new Date().toISOString(),
       };
       msgs.push(initial);
-      saveSessionMessages(sessionId, msgs);
+      saveSessionMessages(msgs);
     }
     renderChatMessages();
   }
 
   function renderChatMessages() {
     if (!chatMessagesEl) return;
-    const targetSession = isAdmin ? activeAdminSession || sessionId : sessionId;
-    const msgs = getSessionMessages(targetSession);
-
+    const msgs = getSessionMessages();
     chatMessagesEl.innerHTML = "";
-
-    msgs.forEach((m) => {
-      appendChatMessage(m, false);
-    });
-
+    msgs.forEach((m) => appendChatMessage(m, false));
     chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
   }
 
@@ -1168,7 +1239,7 @@
     if (!chatMessagesEl) return;
 
     const wrap = document.createElement("div");
-    const isMine = (!isAdmin && m.sender_role === "user") || (isAdmin && m.sender_role === "admin");
+    const isMine = m.sender_role === "user";
     const isSysAdmin = m.sender_role === "admin";
 
     wrap.className = `chat-msg ${isMine ? "mine" : "theirs"} ${isSysAdmin ? "admin" : ""}`;
@@ -1181,7 +1252,7 @@
       : "";
 
     if (isSysAdmin) {
-      meta.innerHTML = `<span class="admin-tag">ADMIN</span> <b>${m.sender_name}</b> • <small>${timeStr}</small>`;
+      meta.innerHTML = `<span class="discord-tag">DISCORD ADMIN</span> <b>${m.sender_name}</b> • <small>${timeStr}</small>`;
     } else {
       meta.innerHTML = `<b>${m.sender_name}</b> • <small>${timeStr}</small>`;
     }
@@ -1199,47 +1270,106 @@
     }
   }
 
-  // Send Discord Webhook Notification
-  async function notifyDiscordWebhook(username, messageText, userLang, sessId) {
-    if (!DISCORD_WEBHOOK_URL) return;
-
-    const payload = {
-      username: "Potter Portfolio Inquiry",
-      avatar_url: "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/cube.svg",
-      embeds: [
-        {
-          title: "ข้อความสอบถามงานใหม่! (New Commission Inquiry)",
-          description: messageText,
-          color: 3007231, // #2DE2FF
-          fields: [
-            { name: "ชื่อผู้ติดต่อ (Client)", value: username || "Guest", inline: true },
-            { name: "ภาษา (Language)", value: userLang.toUpperCase(), inline: true },
-            { name: "เซสชัน (Session ID)", value: sessId.slice(0, 16), inline: true },
-            {
-              name: "เวลาที่ส่ง (Timestamp)",
-              value: new Date().toLocaleString("th-TH"),
-              inline: false,
-            },
-          ],
-          footer: {
-            text: "Potter Portfolio • Minecraft 3D Modeler & Developer",
-          },
-        },
-      ],
-    };
-
+  // Two-Way WebSocket to Python Discord Bot
+  function connectDiscordBotWS() {
     try {
-      await fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } catch (err) {
-      console.warn("Discord Webhook notification error:", err);
+      const wsUrl = `${BOT_WS_URL}?session_id=${encodeURIComponent(sessionId)}`;
+      wsSocket = new WebSocket(wsUrl);
+
+      wsSocket.onopen = () => {
+        botOnline = true;
+        updateBotStatusBadge(true);
+      };
+
+      wsSocket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "chat_message") {
+            const msgs = getSessionMessages();
+            // Avoid duplicate by ID
+            if (!msgs.some((x) => x.id === data.id)) {
+              msgs.push(data);
+              saveSessionMessages(msgs);
+              appendChatMessage(data, true);
+            }
+          } else if (data.type === "ticket_closed") {
+            setTicketStatus("closed");
+            const msgs = getSessionMessages();
+            const closedMsg = {
+              id: "msg_closed_" + Date.now(),
+              session_id: sessionId,
+              sender_name: "Potter (Admin)",
+              sender_role: "admin",
+              content: data.message,
+              created_at: data.created_at,
+            };
+            msgs.push(closedMsg);
+            saveSessionMessages(msgs);
+            appendChatMessage(closedMsg, true);
+          }
+        } catch (ex) {
+          console.warn("Error parsing WS packet:", ex);
+        }
+      };
+
+      wsSocket.onclose = () => {
+        botOnline = false;
+        updateBotStatusBadge(false);
+        // Try reconnecting in 5s
+        setTimeout(connectDiscordBotWS, 5000);
+      };
+
+      wsSocket.onerror = () => {
+        botOnline = false;
+        updateBotStatusBadge(false);
+      };
+    } catch (e) {
+      console.warn("WebSocket initialization error:", e);
+      updateBotStatusBadge(false);
     }
   }
 
-  // Handle Chat Form Submit
+  function updateBotStatusBadge(online) {
+    if (botLiveBadge) {
+      botLiveBadge.className = online ? "bot-badge-online" : "badge badge-warning";
+      botLiveBadge.innerHTML = online
+        ? `<span class="dot-online"></span> <span>Discord Bot ออนไลน์</span>`
+        : `<span class="dot-online" style="background:#ffd166;"></span> <span>โหมดสำรอง (เชื่อมต่อ Bot...)</span>`;
+    }
+  }
+
+  function setTicketStatus(status) {
+    const t = I18N[currentLang] || I18N.th;
+    if (ticketStatusBadge && ticketStatusText) {
+      if (status === "closed") {
+        ticketStatusBadge.className = "ticket-status-pill closed";
+        ticketStatusText.textContent = t.ticketStatusClosed;
+      } else {
+        ticketStatusBadge.className = "ticket-status-pill open";
+        ticketStatusText.textContent = t.ticketStatusOpen;
+      }
+    }
+  }
+
+  // Create Ticket in Bot via REST
+  async function createTicketInDiscordBot(username, email, initialMsg) {
+    try {
+      await fetch(`${BOT_API_URL}/api/ticket/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionId,
+          username: username,
+          email: email,
+          initial_message: initialMsg,
+        }),
+      });
+    } catch (e) {
+      // Local bot may not be running yet, silent fallback
+    }
+  }
+
+  // Chat Form Submit (User sends message -> Bot Ticket Channel in Discord)
   chatForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const text = (chatInput ? chatInput.value : "").trim();
@@ -1247,44 +1377,47 @@
 
     chatInput.value = "";
 
-    const targetSession = isAdmin ? activeAdminSession || sessionId : sessionId;
-    const role = isAdmin ? "admin" : "user";
-    const sender = isAdmin ? "Potter (Admin)" : currentUsername || "Client";
-
     const msgObj = {
-      id: "msg_" + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
-      session_id: targetSession,
-      sender_name: sender,
-      sender_role: role,
+      id: "msg_user_" + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
+      session_id: sessionId,
+      sender_name: currentUsername || "Client",
+      sender_role: "user",
       content: text,
       created_at: new Date().toISOString(),
     };
 
-    // Save to local session
-    const msgs = getSessionMessages(targetSession);
+    // Save and render locally
+    const msgs = getSessionMessages();
     msgs.push(msgObj);
-    saveSessionMessages(targetSession, msgs);
-
-    // Append to UI immediately
+    saveSessionMessages(msgs);
     appendChatMessage(msgObj, true);
 
-    // Send Discord Webhook when user inquiries
-    if (!isAdmin) {
-      notifyDiscordWebhook(sender, text, currentLang, sessionId);
-    }
-
-    // Save to Supabase if connected
-    if (supabaseClient) {
-      supabaseClient
-        .from("chat_messages")
-        .insert({
-          session_id: targetSession,
-          sender_name: sender,
-          sender_role: role,
+    // 1. Send via WebSocket if alive
+    if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+      wsSocket.send(
+        JSON.stringify({
+          action: "send_message",
+          session_id: sessionId,
+          sender_name: currentUsername || "Client",
+          email: currentUserEmail || "",
           content: text,
         })
-        .then(() => {})
-        .catch((err) => console.warn("Supabase insert error:", err));
+      );
+    } else {
+      // 2. Fallback via HTTP POST to bot
+      try {
+        await fetch(`${BOT_API_URL}/api/chat/send`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: sessionId,
+            sender_name: currentUsername || "Client",
+            content: text,
+          }),
+        });
+      } catch (err) {
+        console.warn("Bot REST fallback note:", err);
+      }
     }
   });
 
@@ -1292,128 +1425,9 @@
   clearChatBtn?.addEventListener("click", () => {
     const t = I18N[currentLang] || I18N.th;
     if (confirm(t.clearConfirm)) {
-      const targetSession = isAdmin ? activeAdminSession || sessionId : sessionId;
-      localStorage.removeItem(`potter_chat_msgs_${targetSession}`);
+      localStorage.removeItem(`potter_chat_msgs_${sessionId}`);
       ensureInitialChatGreeting();
     }
-  });
-
-  // --- Admin Modal & Mode Switcher ---
-  const adminModal = document.getElementById("adminModal");
-  const openAdminBtn = document.getElementById("openAdminBtn");
-  const closeAdminModal = document.getElementById("closeAdminModal");
-  const adminAuthBlock = document.getElementById("adminAuthBlock");
-  const adminDashBlock = document.getElementById("adminDashBlock");
-  const adminPassInput = document.getElementById("adminPassInput");
-  const adminLoginBtn = document.getElementById("adminLoginBtn");
-  const adminAuthErr = document.getElementById("adminAuthErr");
-  const adminSessionList = document.getElementById("adminSessionList");
-
-  openAdminBtn?.addEventListener("click", () => {
-    adminModal.hidden = false;
-    if (isAdmin) {
-      adminAuthBlock.hidden = true;
-      adminDashBlock.hidden = false;
-      renderAdminSessions();
-    } else {
-      adminAuthBlock.hidden = false;
-      adminDashBlock.hidden = true;
-      if (adminPassInput) {
-        adminPassInput.value = "";
-        adminPassInput.focus();
-      }
-    }
-  });
-
-  closeAdminModal?.addEventListener("click", () => {
-    adminModal.hidden = true;
-  });
-
-  adminLoginBtn?.addEventListener("click", () => {
-    const pass = (adminPassInput ? adminPassInput.value : "").trim();
-    if (pass === ADMIN_PASSCODE) {
-      isAdmin = true;
-      adminAuthErr.textContent = "";
-      adminAuthBlock.hidden = true;
-      adminDashBlock.hidden = false;
-      renderAdminSessions();
-    } else {
-      adminAuthErr.textContent = "รหัสผ่านแอดมินไม่ถูกต้อง (ค่าเริ่มต้น: potter2026)";
-    }
-  });
-
-  function renderAdminSessions() {
-    if (!adminSessionList) return;
-    adminSessionList.innerHTML = "";
-
-    const users = getRegisteredUsers();
-    if (users.length === 0) {
-      adminSessionList.innerHTML = `<div class="muted">ยังไม่มีรายการแชตจากลูกค้า</div>`;
-      return;
-    }
-
-    users.forEach((u) => {
-      const div = document.createElement("div");
-      div.className = `session-item ${activeAdminSession === u.sessionId ? "active" : ""}`;
-      div.innerHTML = `
-        <div>
-          <b>${u.name}</b>
-          <br><small class="muted">ID: ${u.sessionId.substring(0, 14)}...</small>
-        </div>
-        <button type="button" class="btn btn-sm btn-primary">ดูแชต & ตอบ</button>
-      `;
-
-      div.addEventListener("click", () => {
-        activeAdminSession = u.sessionId;
-        adminModal.hidden = true;
-        location.hash = "chat";
-        renderChatMessages();
-      });
-
-      adminSessionList.appendChild(div);
-    });
-  }
-
-  // Admin Dashboard Tabs
-  document.querySelectorAll(".admin-tab").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      document
-        .querySelectorAll(".admin-tab")
-        .forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      const target = tab.dataset.atab;
-      document.getElementById("atabChats").hidden = target !== "chats";
-      document.getElementById("atabSql").hidden = target !== "sql";
-    });
-  });
-
-  // Supabase Config Save
-  const cfgUrl = document.getElementById("cfgSupabaseUrl");
-  const cfgKey = document.getElementById("cfgSupabaseKey");
-  const saveSupabaseCfg = document.getElementById("saveSupabaseCfg");
-  const resetSupabaseCfg = document.getElementById("resetSupabaseCfg");
-
-  if (cfgUrl) cfgUrl.value = localStorage.getItem("potter_supabase_url") || "";
-  if (cfgKey) cfgKey.value = localStorage.getItem("potter_supabase_key") || "";
-
-  saveSupabaseCfg?.addEventListener("click", () => {
-    const u = (cfgUrl ? cfgUrl.value : "").trim();
-    const k = (cfgKey ? cfgKey.value : "").trim();
-    localStorage.setItem("potter_supabase_url", u);
-    localStorage.setItem("potter_supabase_key", k);
-    initSupabase();
-    alert("บันทึกการตั้งค่า Supabase เรียบร้อยแล้ว!");
-  });
-
-  resetSupabaseCfg?.addEventListener("click", () => {
-    localStorage.removeItem("potter_supabase_url");
-    localStorage.removeItem("potter_supabase_key");
-    if (cfgUrl) cfgUrl.value = "";
-    if (cfgKey) cfgKey.value = "";
-    supabaseClient = null;
-    initSupabase();
-    alert("รีเซ็ตการตั้งค่าเรียบร้อยแล้ว");
   });
 
   // --- Code Copy Button ---
@@ -1427,7 +1441,6 @@
         setTimeout(() => (cp.textContent = t.codeCopy), 1500);
       });
     } catch (e) {
-      // Fallback
       const range = document.createRange();
       range.selectNodeContents(sn);
       const sel = window.getSelection();
@@ -1439,31 +1452,21 @@
     }
   });
 
-  // --- Initial Setup Execution ---
-  // 1. Language Setup
+  // --- Initial Page Setup ---
   applyLanguage(currentLang);
-
-  // 2. Initial Tab
   showTab(location.hash.slice(1));
-
-  // 3. Render Gallery
   renderGallery();
+  generateMathQuestion();
 
-  // 4. Check User Onboarding / Welcome Modal
   if (!currentUsername) {
     if (welcomeOverlay) {
       welcomeOverlay.style.display = "grid";
       welcomeOverlay.classList.remove("hide");
     }
   } else {
-    if (welcomeOverlay) {
-      welcomeOverlay.style.display = "none";
-    }
-    registerUser(currentUsername, sessionId);
+    if (welcomeOverlay) welcomeOverlay.style.display = "none";
     updateUserDisplay();
+    connectDiscordBotWS();
     ensureInitialChatGreeting();
   }
-
-  // 5. Initialize Supabase
-  initSupabase();
 })();

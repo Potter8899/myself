@@ -1200,6 +1200,123 @@ h2 {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+/* Anti-Bot & Auth Form Styles */
+.auth-mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.auth-tab {
+  padding: 10px;
+  background: #080c18;
+  border: 1px solid var(--border-line);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-tab:hover {
+  color: #fff;
+  border-color: var(--cyan);
+}
+
+.auth-tab.active {
+  background: rgba(45, 226, 255, 0.15);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.hp-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.antibot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.math-question {
+  background: #080c18;
+  border: 1px solid var(--border-line);
+  color: var(--cyan);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+/* Bot Live Badge in Top Nav */
+.bot-badge-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Ticket Status Row in Chat */
+.ticket-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ticket-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ticket-status-pill.open {
+  background: rgba(45, 226, 255, 0.12);
+  border: 1px solid rgba(45, 226, 255, 0.4);
+  color: var(--cyan);
+}
+
+.ticket-status-pill.closed {
+  background: rgba(255, 46, 86, 0.15);
+  border: 1px solid rgba(255, 46, 86, 0.4);
+  color: var(--red);
+}
+
+/* Discord Admin Tag in Messages */
+.discord-tag {
+  background: #5865F2;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Code Snippet Panel */
 .code {
   background: var(--bg-surface);
