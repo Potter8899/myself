@@ -112,6 +112,11 @@
       loginWrongPass: "รหัสผ่านไม่ถูกต้อง",
       authSubmitRegister: "เข้าสู่เว็บไซต์ & เริ่มแชต",
       authSubmitLogin: "เข้าสู่ระบบ",
+      returningLabel: "เข้าสู่ระบบในชื่อ:",
+      quickEnterText: "เข้าชมผลงาน (Enter Portfolio)",
+      toggleAuthText: "สลับบัญชี / แก้ไขข้อมูล",
+      guestEnterText: "เข้าชมแบบแขก",
+      skipGuestText: "เข้าชมผลงานในฐานะผู้เยี่ยมชม (Guest)",
       tabs: {
         about: "เกี่ยวกับ",
         projects: "ผลงาน & โมเดล",
@@ -218,6 +223,11 @@
       loginWrongPass: "Incorrect password",
       authSubmitRegister: "Enter Portfolio & Start Chat",
       authSubmitLogin: "Sign In",
+      returningLabel: "Signed in as:",
+      quickEnterText: "Enter Portfolio",
+      toggleAuthText: "Switch Account / Edit",
+      guestEnterText: "Enter as Guest",
+      skipGuestText: "Browse Portfolio as Guest",
       tabs: {
         about: "About",
         projects: "Works & Models",
@@ -324,6 +334,11 @@
       loginWrongPass: "Неверный пароль",
       authSubmitRegister: "Войти и начать чат",
       authSubmitLogin: "Войти",
+      returningLabel: "Вы вошли как:",
+      quickEnterText: "Войти в портфолио",
+      toggleAuthText: "Сменить аккаунт",
+      guestEnterText: "Войти как гость",
+      skipGuestText: "Просмотреть портфолио как гость",
       tabs: {
         about: "Обо мне",
         projects: "Модели и работы",
@@ -655,6 +670,11 @@
     setSafe("emailInputLabel", t.emailInputLabel);
     setSafe("passInputLabel", t.passInputLabel);
     setSafe("antiBotLabel", t.antiBotLabel);
+    setSafe("returningLabel", t.returningLabel);
+    setSafe("quickEnterText", t.quickEnterText);
+    setSafe("toggleAuthText", t.toggleAuthText);
+    setSafe("guestEnterText", t.guestEnterText);
+    setSafe("skipGuestText", t.skipGuestText);
     setSafe(
       "authSubmitText",
       authMode === "register" ? t.authSubmitRegister : t.authSubmitLogin
@@ -1130,16 +1150,7 @@
     }
 
     updateUserDisplay();
-
-    // Close Overlay with smooth fade
-    welcomeOverlay.classList.add("hide");
-    setTimeout(() => {
-      welcomeOverlay.style.display = "none";
-    }, 400);
-
-    // Initialize Two-Way Discord WebSocket connection
-    connectDiscordBotWS();
-    ensureInitialChatGreeting();
+    closeWelcomeOverlay();
   });
 
   function updateUserDisplay() {
@@ -1151,11 +1162,69 @@
     }
   }
 
-  // Switch User / Logout button
+  // --- Welcome Screen State Management ---
+  const returningUserBlock = document.getElementById("returningUserBlock");
+  const newUserBlock = document.getElementById("newUserBlock");
+  const returningNameText = document.getElementById("returningNameText");
+  const returningEmailText = document.getElementById("returningEmailText");
+  const quickEnterBtn = document.getElementById("quickEnterBtn");
+  const toggleAuthBtn = document.getElementById("toggleAuthBtn");
+  const guestEnterBtn = document.getElementById("guestEnterBtn");
+  const skipToGuestBtn = document.getElementById("skipToGuestBtn");
+
+  function setupWelcomeScreenState() {
+    if (currentUsername && currentUsername !== "Guest") {
+      if (returningUserBlock) returningUserBlock.hidden = false;
+      if (newUserBlock) newUserBlock.hidden = true;
+      if (returningNameText) returningNameText.textContent = currentUsername;
+      if (returningEmailText) returningEmailText.textContent = currentUserEmail || "User";
+    } else {
+      if (returningUserBlock) returningUserBlock.hidden = true;
+      if (newUserBlock) newUserBlock.hidden = false;
+      generateMathQuestion();
+    }
+  }
+
+  function closeWelcomeOverlay() {
+    if (!welcomeOverlay) return;
+    welcomeOverlay.classList.add("hide");
+    setTimeout(() => {
+      welcomeOverlay.style.display = "none";
+    }, 350);
+    updateUserDisplay();
+    connectDiscordBotWS();
+    ensureInitialChatGreeting();
+  }
+
+  // Quick Enter for Returning User
+  quickEnterBtn?.addEventListener("click", closeWelcomeOverlay);
+
+  // Switch to Full Register/Login Form
+  toggleAuthBtn?.addEventListener("click", () => {
+    if (returningUserBlock) returningUserBlock.hidden = true;
+    if (newUserBlock) newUserBlock.hidden = false;
+    generateMathQuestion();
+  });
+
+  // Enter as Guest
+  guestEnterBtn?.addEventListener("click", () => {
+    currentUsername = currentUsername || "Guest";
+    closeWelcomeOverlay();
+  });
+
+  skipToGuestBtn?.addEventListener("click", () => {
+    currentUsername = "Guest";
+    currentUserEmail = "";
+    closeWelcomeOverlay();
+  });
+
+  // Switch User button in Top Nav
   document.getElementById("switchUserBtn")?.addEventListener("click", () => {
     if (welcomeOverlay) {
       welcomeOverlay.style.display = "grid";
       welcomeOverlay.classList.remove("hide");
+      if (returningUserBlock) returningUserBlock.hidden = true;
+      if (newUserBlock) newUserBlock.hidden = false;
       generateMathQuestion();
       if (authUsernameInput) authUsernameInput.value = currentUsername;
     }
@@ -1456,17 +1525,11 @@
   applyLanguage(currentLang);
   showTab(location.hash.slice(1));
   renderGallery();
-  generateMathQuestion();
 
-  if (!currentUsername) {
-    if (welcomeOverlay) {
-      welcomeOverlay.style.display = "grid";
-      welcomeOverlay.classList.remove("hide");
-    }
-  } else {
-    if (welcomeOverlay) welcomeOverlay.style.display = "none";
-    updateUserDisplay();
-    connectDiscordBotWS();
-    ensureInitialChatGreeting();
+  // ALWAYS Show Welcome & Loading Screen on page entry/reload!
+  if (welcomeOverlay) {
+    welcomeOverlay.style.display = "grid";
+    welcomeOverlay.classList.remove("hide");
+    setupWelcomeScreenState();
   }
 })();

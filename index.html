@@ -22,75 +22,113 @@
 <!-- Lightbox Modal -->
 <div id="lb" role="dialog" aria-label="ดูรูปเต็ม"><img alt=""></div>
 
-<!-- Welcoming, Account Registration & Anti-Bot Verification Modal -->
+<!-- Welcoming Loading Screen, Language Selection & Account Verification Modal -->
 <div id="welcomeOverlay" class="welcome-overlay" role="dialog" aria-modal="true">
   <div class="welcome-card">
-    <div class="welcome-badge">POTTER • PORTFOLIO & TICKETS</div>
+    <!-- Cosmic Loading Bar -->
+    <div class="loading-bar-wrap">
+      <div class="loading-bar-fill"></div>
+    </div>
+
+    <div class="welcome-badge" id="welcomeBadge">POTTER • MINECRAFT 3D & DEV</div>
     <h2 id="welcomeTitle" class="welcome-title">ยินดีต้อนรับสู่ Portfolio ของ พอตเตอร์</h2>
     <p id="welcomeDesc" class="welcome-desc">รับทำโมเดล Minecraft 3D (Blockbench) พัฒนามอด และระบบซอฟต์แวร์</p>
 
-    <!-- Language Selector Pills -->
+    <!-- Language Selector Pills (Prominently featured) -->
     <div class="welcome-block">
       <label class="block-label" id="langSelectLabel">เลือกภาษา / Select Language / Выберите язык</label>
       <div class="lang-pills">
-        <button type="button" class="lang-pill active" data-lang="th">ไทย</button>
-        <button type="button" class="lang-pill" data-lang="en">English</button>
-        <button type="button" class="lang-pill" data-lang="ru">Русский</button>
+        <button type="button" class="lang-pill active" data-lang="th">🇹🇭 ไทย (TH)</button>
+        <button type="button" class="lang-pill" data-lang="en">🇬🇧 English (EN)</button>
+        <button type="button" class="lang-pill" data-lang="ru">🇷🇺 Русский (RU)</button>
       </div>
     </div>
 
-    <!-- Auth Mode Switcher (Register / Login) -->
-    <div class="auth-mode-tabs">
-      <button type="button" id="tabModeRegister" class="auth-tab active">เปิดตั๋วใหม่ / สมัครสมาชิก</button>
-      <button type="button" id="tabModeLogin" class="auth-tab">เข้าสู่ระบบ (มีบัญชีแล้ว)</button>
-    </div>
-
-    <form id="authForm" novalidate>
-      <!-- Anti-bot Honeypot field (hidden from real users, bots fill this) -->
-      <div class="hp-trap" aria-hidden="true">
-        <input type="text" name="hp_website_check" id="hpWebsiteCheck" tabindex="-1" autocomplete="off">
-      </div>
-
-      <!-- Username with Real-time Duplicate Check -->
-      <div class="welcome-block">
-        <label class="block-label" for="authUsernameInput" id="nameInputLabel">ชื่อผู้ใช้ (Username) - กันชื่อซ้ำ</label>
-        <div class="input-with-check">
-          <input type="text" id="authUsernameInput" maxlength="24" placeholder="กรอกชื่อผู้ใช้..." autocomplete="username" required>
+    <!-- State 1: Returning User Box (Shown if previously entered) -->
+    <div id="returningUserBlock" class="returning-user-box" hidden>
+      <div class="user-greeting">
+        <div class="user-avatar-dot">🎮</div>
+        <div>
+          <span class="muted" id="returningLabel">เข้าสู่ระบบในชื่อ:</span>
+          <b id="returningNameText" class="d-block">Potter</b>
+          <small id="returningEmailText" class="muted">email@example.com</small>
         </div>
-        <div id="usernameCheckMsg" class="name-msg"></div>
       </div>
-
-      <!-- Email with Strict Format Verification -->
-      <div class="welcome-block" id="emailBlock">
-        <label class="block-label" for="authEmailInput" id="emailInputLabel">อีเมลของคุณ (สำหรับติดต่อและรับแจ้งเตือน)</label>
-        <input type="email" id="authEmailInput" placeholder="name@example.com" autocomplete="email" required>
-        <div id="emailCheckMsg" class="name-msg"></div>
-      </div>
-
-      <!-- Password Field -->
-      <div class="welcome-block">
-        <label class="block-label" for="authPassInput" id="passInputLabel">รหัสผ่าน (Password - ขั้นต่ำ 6 ตัวอักษร)</label>
-        <input type="password" id="authPassInput" minlength="6" placeholder="กำหนดรหัสผ่านของคุณ..." autocomplete="current-password" required>
-        <div id="passCheckMsg" class="name-msg"></div>
-      </div>
-
-      <!-- Anti-Bot Math Human Verification -->
-      <div class="welcome-block" id="antiBotBlock">
-        <label class="block-label" for="antiBotInput" id="antiBotLabel">ระบบตรวจสอบความปลอดภัย (Anti-Bot Challenge)</label>
-        <div class="antibot-row">
-          <div id="mathQuestionBox" class="math-question">คำนวณ: 5 + 3 = ?</div>
-          <input type="number" id="antiBotInput" placeholder="คำตอบ" style="max-width: 120px;" required>
-          <button type="button" id="refreshMathBtn" class="btn btn-sm btn-secondary" title="เปลี่ยนโจทย์">🔄</button>
-        </div>
-        <div id="antiBotMsg" class="name-msg"></div>
-      </div>
-
-      <div class="welcome-actions">
-        <button type="submit" id="authSubmitBtn" class="btn btn-primary enter-btn">
-          <span id="authSubmitText">เข้าสู่เว็บไซต์ & เริ่มแชต</span>
+      <div class="welcome-actions mt-16">
+        <button type="button" id="quickEnterBtn" class="btn btn-primary enter-btn">
+          <span id="quickEnterText">เข้าชมผลงาน</span>
         </button>
+        <div class="row-between mt-10">
+          <button type="button" id="toggleAuthBtn" class="pill-link">
+            <span id="toggleAuthText">สลับบัญชี / แก้ไขข้อมูล</span>
+          </button>
+          <button type="button" id="guestEnterBtn" class="pill-link">
+            <span id="guestEnterText">เข้าชมแบบแขก</span>
+          </button>
+        </div>
       </div>
-    </form>
+    </div>
+
+    <!-- State 2: New User Registration & Login Form -->
+    <div id="newUserBlock">
+      <!-- Auth Mode Switcher (Register / Login) -->
+      <div class="auth-mode-tabs">
+        <button type="button" id="tabModeRegister" class="auth-tab active">เปิดตั๋วใหม่ / สมัครสมาชิก</button>
+        <button type="button" id="tabModeLogin" class="auth-tab">เข้าสู่ระบบ (มีบัญชีแล้ว)</button>
+      </div>
+
+      <form id="authForm" novalidate>
+        <!-- Anti-bot Honeypot field (hidden from real users, bots fill this) -->
+        <div class="hp-trap" aria-hidden="true">
+          <input type="text" name="hp_website_check" id="hpWebsiteCheck" tabindex="-1" autocomplete="off">
+        </div>
+
+        <!-- Username with Real-time Duplicate Check -->
+        <div class="welcome-block">
+          <label class="block-label" for="authUsernameInput" id="nameInputLabel">ชื่อผู้ใช้ (Username) - กันชื่อซ้ำ</label>
+          <div class="input-with-check">
+            <input type="text" id="authUsernameInput" maxlength="24" placeholder="กรอกชื่อผู้ใช้..." autocomplete="username" required>
+          </div>
+          <div id="usernameCheckMsg" class="name-msg"></div>
+        </div>
+
+        <!-- Email with Strict Format Verification -->
+        <div class="welcome-block" id="emailBlock">
+          <label class="block-label" for="authEmailInput" id="emailInputLabel">อีเมลของคุณ (สำหรับติดต่อและรับแจ้งเตือน)</label>
+          <input type="email" id="authEmailInput" placeholder="name@example.com" autocomplete="email" required>
+          <div id="emailCheckMsg" class="name-msg"></div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="welcome-block">
+          <label class="block-label" for="authPassInput" id="passInputLabel">รหัสผ่าน (Password - ขั้นต่ำ 6 ตัวอักษร)</label>
+          <input type="password" id="authPassInput" minlength="6" placeholder="กำหนดรหัสผ่านของคุณ..." autocomplete="current-password" required>
+          <div id="passCheckMsg" class="name-msg"></div>
+        </div>
+
+        <!-- Anti-Bot Math Human Verification -->
+        <div class="welcome-block" id="antiBotBlock">
+          <label class="block-label" for="antiBotInput" id="antiBotLabel">ระบบตรวจสอบความปลอดภัย (Anti-Bot Challenge)</label>
+          <div class="antibot-row">
+            <div id="mathQuestionBox" class="math-question">คำนวณ: 5 + 3 = ?</div>
+            <input type="number" id="antiBotInput" placeholder="คำตอบ" style="max-width: 120px;" required>
+            <button type="button" id="refreshMathBtn" class="btn btn-sm btn-secondary" title="เปลี่ยนโจทย์">🔄</button>
+          </div>
+          <div id="antiBotMsg" class="name-msg"></div>
+        </div>
+
+        <div class="welcome-actions">
+          <button type="submit" id="authSubmitBtn" class="btn btn-primary enter-btn">
+            <span id="authSubmitText">เข้าสู่เว็บไซต์ & เริ่มแชต</span>
+          </button>
+          <div class="text-center mt-12">
+            <button type="button" id="skipToGuestBtn" class="pill-link">
+              <span id="skipGuestText">เข้าชมผลงานในฐานะผู้เยี่ยมชม (Guest)</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 

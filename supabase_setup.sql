@@ -1,7 +1,7 @@
 -- ========================================================
 -- Potter Portfolio: Supabase Database Setup & Schema
 -- Complete Discord Bot & Ticket System Integration
--- Run this SQL in your Supabase Project -> SQL Editor
+-- Safe & Idempotent (สามารถรันซ้ำได้โดยไม่ติด Error)
 -- ========================================================
 
 -- 1. Create table for user accounts (with unique username, email & password hash)
@@ -47,28 +47,55 @@ alter table public.chat_accounts enable row level security;
 alter table public.chat_tickets enable row level security;
 alter table public.chat_messages enable row level security;
 
--- 6. Policies for public / anonymous client access
+-- 6. Policies for public / anonymous client access (Drop and Recreate safely)
+drop policy if exists "Allow all read messages" on public.chat_messages;
 create policy "Allow all read messages"
 on public.chat_messages for select using (true);
 
+drop policy if exists "Allow all insert messages" on public.chat_messages;
 create policy "Allow all insert messages"
 on public.chat_messages for insert with check (true);
 
+drop policy if exists "Allow all read tickets" on public.chat_tickets;
 create policy "Allow all read tickets"
 on public.chat_tickets for select using (true);
 
+drop policy if exists "Allow all insert tickets" on public.chat_tickets;
 create policy "Allow all insert tickets"
 on public.chat_tickets for insert with check (true);
 
+drop policy if exists "Allow all update tickets" on public.chat_tickets;
 create policy "Allow all update tickets"
 on public.chat_tickets for update using (true);
 
+drop policy if exists "Allow all read accounts" on public.chat_accounts;
 create policy "Allow all read accounts"
 on public.chat_accounts for select using (true);
 
+drop policy if exists "Allow all insert accounts" on public.chat_accounts;
 create policy "Allow all insert accounts"
 on public.chat_accounts for insert with check (true);
 
--- 7. Enable Realtime on tables for live two-way chat sync
-alter publication supabase_realtime add table public.chat_messages;
-alter publication supabase_realtime add table public.chat_tickets;
+-- 7. Enable Realtime on tables safely (ตรวจเช็คก่อนเพิ่ม ป้องกัน Error 42710)
+do $$
+begin
+  -- เพิ่ม chat_messages เข้า publication หากยังไม่เคยเพิ่ม
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' 
+      and schemaname = 'public' 
+      and tablename = 'chat_messages'
+  ) then
+    alter publication supabase_realtime add table public.chat_messages;
+  end if;
+
+  -- เพิ่ม chat_tickets เข้า publication หากยังไม่เคยเพิ่ม
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' 
+      and schemaname = 'public' 
+      and tablename = 'chat_tickets'
+  ) then
+    alter publication supabase_realtime add table public.chat_tickets;
+  end if;
+end $$;

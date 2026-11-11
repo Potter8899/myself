@@ -905,6 +905,78 @@ h2 {
   font-size: 0.8rem;
 }
 
+/* Cosmic Loading Bar */
+.loading-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  animation: loadProgress 0.8s ease-out forwards;
+}
+
+@keyframes loadProgress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Returning User Box */
+.returning-user-box {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-line);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(45, 226, 255, 0.12);
+  border: 1px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.d-block { display: block; font-size: 1.1rem; }
+.row-between { display: flex; justify-content: space-between; align-items: center; }
+.text-center { text-align: center; }
+.mt-10 { margin-top: 10px; }
+
+.pill-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px 0;
+  transition: color 0.15s;
+}
+
+.pill-link:hover {
+  color: var(--cyan);
+}
+
 /* Welcome Overlay Modal */
 .welcome-overlay {
   position: fixed;
