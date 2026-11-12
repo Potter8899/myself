@@ -76,6 +76,7 @@ class Bot(discord.Client):
     async def setup_hook(self):
         self.add_view(TicketView()); self.add_view(SnippetView())
         self.tree.copy_global_to(guild=GUILD); await self.tree.sync(guild=GUILD)
+        self.tree.clear_commands(guild=None); await self.tree.sync()   # ล้างคำสั่ง global เก่าที่ค้างบน Discord (เช่น /ui) ไม่ให้เกิด CommandNotFound
         pump.start()
 bot = Bot()
 
