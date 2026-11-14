@@ -1,0 +1,59 @@
+# Render Blueprint — Website (static) + Backend (web service). The Discord bot does NOT run on Render (see docs/05_BOT_HOSTING.md).
+# Free web services spin down after ~15 min without traffic; the first request afterwards takes about a minute (cold start).
+# The site shows a "server is waking up" message and does not ping the backend to keep it awake.
+services:
+  - type: web
+    name: potter-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: TURNSTILE_SITE_KEY
+        sync: false
+      - key: TURNSTILE_SECRET_KEY
+        sync: false
+      - key: TURNSTILE_HOSTNAMES   # hostname of the static site, e.g. potter-site.onrender.com
+        sync: false
+      - key: CORS_ORIGINS          # full origin of the static site, e.g. https://potter-site.onrender.com
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+
+  - type: web
+    name: potter-site
+    runtime: static
+    rootDir: frontend
+    buildCommand: sh build.sh
+    staticPublishPath: .
+    envVars:
+      - key: API_URL               # e.g. https://potter-api.onrender.com
+        sync: false
+      - key: SITE_URL              # e.g. https://potter-site.onrender.com
+        sync: false
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Referrer-Policy
+        value: same-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=()
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://*.onrender.com https://challenges.cloudflare.com; img-src 'self' data: https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"

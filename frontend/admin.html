@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Potter — Admin</title><link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/admin.css"></head>
+<body class="admin">
+<canvas id="space" hidden></canvas><div id="progress" hidden></div><div id="cursor" hidden></div><div id="nav" hidden></div><div id="loader" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<section id="gate" class="gate" hidden>
+  <form id="loginForm" class="glass pad box" novalidate>
+    <h1>Admin</h1><p class="hint" id="gateMsg">Sign in with a staff account.</p>
+    <label>Username<input name="username" required maxlength="20" autocomplete="username"></label>
+    <label>Password<input name="password" type="password" required maxlength="72" autocomplete="current-password"></label>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="cap" id="loginCap"><div class="cap-widget"></div><div class="cap-status" data-s="idle"><span class="dot"></span><span class="txt"></span><button type="button" class="retry" hidden>Retry</button></div></div>
+    <p class="err" id="loginErr" role="alert"></p><button class="btn primary" type="submit">Log in</button><a class="link" href="index.html">← Back to site</a>
+  </form>
+</section>
+<div id="app" class="app" hidden>
+  <aside class="side glass"><a class="logo" href="index.html">POTTER<span>.</span></a><nav id="sideNav" aria-label="Admin"></nav>
+    <div class="who"><span id="whoName"></span><span class="pill" id="whoRole"></span><button class="btn small" id="outBtn" type="button">Log out</button></div></aside>
+  <main class="main"><div class="top"><h2 id="viewTitle"></h2><div id="viewTools"></div></div><div id="view"></div></main>
+</div>
+<div id="editor" class="modal" hidden role="dialog" aria-modal="true"><form id="editForm" class="glass pad edit" novalidate><button type="button" class="x" id="editX" aria-label="Close">✕</button><h3 id="editTitle"></h3><div id="editFields" class="fields"></div><p class="err" id="editErr" role="alert"></p><div class="row"><button class="btn primary" type="submit">Save</button><button class="btn" type="button" id="editCancel">Cancel</button></div></form></div>
+<script src="js/config.js"></script><script src="js/md.js"></script><script src="js/admin.js"></script>
+</body></html>
