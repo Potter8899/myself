@@ -2,15 +2,15 @@
    WORKS — ไฟล์เดียวสำหรับ "เพิ่ม / แก้ / ลบ ผลงาน" (แท็บ ผลงาน) ไม่ต้องแตะ content.js
    วิธีเพิ่มผลงานใหม่:  คัดลอกบล็อก { ... }, ตัวอย่างด้านล่างไปวาง แล้วแก้ข้อความ
    • เรียงตามลำดับในไฟล์นี้ (บนสุดแสดงก่อน) · featured: true จะถูกดันขึ้นก่อนและการ์ดใหญ่กว่า
-   • ใส่เฉพาะ title กับ desc ก็พอ ที่เหลือไม่ใส่ได้หมด · ข้อความเป็นภาษาไทยธรรมดา (อยากมีอังกฤษด้วยใส่ titleEn / descEn / detailEn)
+   • ใส่เฉพาะ title กับ desc ก็พอ ที่เหลือไม่ใส่ได้หมด · ข้อความเป็นภาษาไทยธรรมดา (อยากมีอังกฤษใส่ titleEn / descEn / detailEn · รัสเซียใส่ titleRu / descRu / detailRu)
    • ซ่อนผลงานชั่วคราวโดยไม่ลบ: ใส่ hidden: true
    • รูป: วางไฟล์ในโฟลเดอร์ img/works/ ชื่อภาษาอังกฤษ/ตัวเลขไม่มีเว้นวรรค แล้วใส่ img: "img/works/ชื่อไฟล์.png"
    • ลิงก์ต้องขึ้นต้นด้วย https:// เท่านั้น · ทุกบล็อกต้องมี , ปิดท้าย
 
    ช่องที่ใช้ได้ (ทั้งหมดไม่บังคับ ยกเว้น title):
-     title      ชื่อผลงาน                       titleEn  ชื่อภาษาอังกฤษ (ไม่ใส่ = ใช้ชื่อไทย)
-     desc       คำอธิบายสั้น 1 บรรทัด            descEn   (ไม่ใส่ = ใช้ภาษาไทย)
-     detail     รายละเอียดยาว (Markdown ได้)     detailEn
+     title      ชื่อผลงาน                       titleEn  ชื่อภาษาอังกฤษ     titleRu  ชื่อภาษารัสเซีย  (ไม่ใส่ = รัสเซียใช้อังกฤษ แล้วไทย)
+     desc       คำอธิบายสั้น 1 บรรทัด            descEn / descRu   (ไม่ใส่ = ใช้ภาษาอื่นแทน)
+     detail     รายละเอียดยาว (Markdown ได้)     detailEn / detailRu
      type       minecraft | website | app | bot | ai | experiment
      status     live (ใช้งานอยู่) | wip (กำลังทำ) | planned (วางแผน) | archived (เก็บถาวร)
      img        รูปปก     images  รูปประกอบในหน้ารายละเอียด เช่น ["img/works/a.png", "img/works/b.png"]
@@ -34,16 +34,18 @@ window.WORKS = [
   //   featured: true,
   // },
 
-  { id: "lyrics-subtitle-ai", title: "ระบบเขียนซับหลากหลายภาษาจากเพลง", titleEn: "Multilingual Lyrics Subtitle System",
-    desc: "ระบบสร้างซับไตเติลหลายภาษาจากเพลงโดยอัตโนมัติ", descEn: "A system that automatically generates multilingual subtitles from songs.",
+  { id: "lyrics-subtitle-ai", title: "ระบบเขียนซับหลากหลายภาษาจากเพลง", titleEn: "Multilingual Lyrics Subtitle System", titleRu: "Система многоязычных субтитров к песням",
+    desc: "ระบบสร้างซับไตเติลหลายภาษาจากเพลงโดยอัตโนมัติ", descEn: "A system that automatically generates multilingual subtitles from songs.", descRu: "Система, которая автоматически создаёт субтитры к песням на разных языках.",
     type: "ai", status: "wip", img: "img/www.png", tags: "Python, HTML5, PySide6, AI", featured: true,
     detail: "**ภาษาและเครื่องมือ**\n\n- Python\n- HTML5\n- PySide6\n\n**AI ที่ใช้ในการรวมงาน**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**สถานะ:** อยู่ในช่วงพัฒนา",
-    detailEn: "**Languages & tools**\n\n- Python\n- HTML5\n- PySide6\n\n**AI used to build it**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**Status:** in development" },
+    detailEn: "**Languages & tools**\n\n- Python\n- HTML5\n- PySide6\n\n**AI used to build it**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**Status:** in development",
+    detailRu: "**Языки и инструменты**\n\n- Python\n- HTML5\n- PySide6\n\n**ИИ, использованный при разработке**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**Статус:** в разработке" },
 
-  { id: "ai-desktop-assistant", title: "AI ผู้ช่วยหน้าคอมพิวเตอร์", titleEn: "AI Desktop Assistant",
-    desc: "AI ผู้ช่วยหน้าคอมพิวเตอร์ ถามความรู้จาก AI และพูดคุยได้", descEn: "An AI assistant on your computer screen: ask it for knowledge and chat with it.",
+  { id: "ai-desktop-assistant", title: "AI ผู้ช่วยหน้าคอมพิวเตอร์", titleEn: "AI Desktop Assistant", titleRu: "ИИ-помощник на компьютере",
+    desc: "AI ผู้ช่วยหน้าคอมพิวเตอร์ ถามความรู้จาก AI และพูดคุยได้", descEn: "An AI assistant on your computer screen: ask it for knowledge and chat with it.", descRu: "ИИ-помощник на экране компьютера: задавайте вопросы и общайтесь с ним.",
     type: "ai", status: "wip", img: "img/ww1.png", tags: "Python, XAML, CSS, C, AI",
     detail: "**ความสามารถ**\n\n- ผู้ช่วยหน้าคอมพิวเตอร์\n- สอบถามหาความรู้จาก AI\n- พูดคุยได้\n\n**ภาษาและเครื่องมือ**\n\n- Python\n- XAML\n- CSS\n- C\n\n**AI ผู้ช่วย**\n\n- Claude Sonnet 5.5\n\n**สถานะ:** กำลังพัฒนา",
-    detailEn: "**Features**\n\n- Assistant on the computer screen\n- Ask AI for knowledge\n- Can talk with you\n\n**Languages & tools**\n\n- Python\n- XAML\n- CSS\n- C\n\n**AI**\n\n- Claude Sonnet 5.5\n\n**Status:** in development" },
+    detailEn: "**Features**\n\n- Assistant on the computer screen\n- Ask AI for knowledge\n- Can talk with you\n\n**Languages & tools**\n\n- Python\n- XAML\n- CSS\n- C\n\n**AI**\n\n- Claude Sonnet 5.5\n\n**Status:** in development",
+    detailRu: "**Возможности**\n\n- Помощник на экране компьютера\n- Вопросы к ИИ и поиск знаний\n- Можно общаться голосом\n\n**Языки и инструменты**\n\n- Python\n- XAML\n- CSS\n- C\n\n**ИИ**\n\n- Claude Sonnet 5.5\n\n**Статус:** в разработке" },
 
 ];

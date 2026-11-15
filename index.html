@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Potter — Personal Space</title>
 <meta name="description" content="Potter's personal space: developer portfolio, projects and devlog. พื้นที่ส่วนตัวของ Potter นักพัฒนา เว็บ บอท ม็อด Minecraft และโมเดล 3D">
 <link rel="canonical" href="__SITE_URL__/">
@@ -14,8 +14,14 @@
 <meta name="theme-color" content="#050609">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<script>(function(){var d=document.documentElement,n=navigator,ua=n.userAgent||"",uad=n.userAgentData,tp=n.maxTouchPoints||0,
+coarse=false;try{coarse=matchMedia("(pointer:coarse)").matches||matchMedia("(hover:none)").matches}catch(e){}
+var ipad=/iPad/.test(ua)||(n.platform==="MacIntel"&&tp>1),androidTab=/Android/i.test(ua)&&!/Mobile/i.test(ua),
+phone=(uad&&typeof uad.mobile==="boolean"&&uad.mobile)||/iPhone|iPod|Android.+Mobile|Windows Phone|Mobile Safari|Opera Mini|IEMobile/i.test(ua),
+small=Math.min(screen.width||9999,screen.height||9999)<600,type=ipad||androidTab||/Tablet/i.test(ua)?"tablet":(phone||(coarse&&tp>0&&small)?"mobile":"desktop");
+d.setAttribute("data-device",type);if(type!=="desktop"||(coarse&&tp>0))d.classList.add("touch");window.DEVICE={type:type,touch:d.classList.contains("touch")};})();</script>
 <script>(function(){try{if(!localStorage.getItem("ps_lang")||/[?&]gate(=|&|$)/.test(location.search))document.documentElement.classList.add("gate-on")}catch(e){document.documentElement.classList.add("gate-on")}})();</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Potter","url":"__SITE_URL__/","sameAs":["https://github.com/Potter8899"],"jobTitle":"Developer"}</script>
 </head>
@@ -24,10 +30,11 @@
 <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="gate-box">
     <p class="gate-logo">POTTER<span>.</span></p>
-    <p id="gateTitle" class="gate-title">เลือกภาษา <i>·</i> Choose your language</p>
+    <p id="gateTitle" class="gate-title">เลือกภาษา <i>·</i> Choose your language <i>·</i> Выберите язык</p>
     <div class="gate-btns">
       <button type="button" class="gate-btn" data-lang="th" lang="th"><b>ไทย</b><small>ภาษาไทย</small></button>
       <button type="button" class="gate-btn" data-lang="en" lang="en"><b>English</b><small>English</small></button>
+      <button type="button" class="gate-btn" data-lang="ru" lang="ru"><b>Русский</b><small>Русский язык</small></button>
     </div>
   </div>
 </div>
@@ -45,7 +52,7 @@
     <a href="#contact" data-nav="contact" data-i18n="nav.contact">Contact</a>
   </nav>
   <div class="nav-tools">
-    <button class="btn small" id="langBtn" type="button" data-i18n-aria="nav.lang" aria-label="Switch language">EN</button>
+    <div class="langs" id="langs" role="group" data-i18n-aria="nav.lang" aria-label="Switch language"><button type="button" data-lang="th" lang="th">TH</button><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="ru" lang="ru">RU</button></div>
     <button class="burger" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks" data-i18n-aria="nav.menu" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -53,6 +60,12 @@
 <main id="main">
 <section id="top" class="hero" data-pane="top">
   <div class="hero-text">
+    <div class="hero-badge-row">
+      <div id="device-badge" role="status" aria-live="polite">
+        <span class="dv-icon" id="dvIcon">💻</span>
+        <span class="dv-label"><span id="dvLabelText">กำลังดูผ่าน</span> <span class="dv-type" id="dvType">คอมพิวเตอร์</span></span>
+      </div>
+    </div>
     <p class="hello"><span data-i18n="hero.hello">Hello, I'm</span></p>
     <h1 id="heroName" class="split">POTTER</h1>
     <p class="welcome" data-i18n="hero.welcome">Welcome to my digital universe.</p>
@@ -97,7 +110,7 @@
   <div class="glass pad contact-side"><p class="lead" data-i18n="ct.lead"></p><div class="chips" id="contactLinks"></div></div></section>
 </main>
 
-<footer class="foot"><span>© <span id="year"></span> Potter · <span data-i18n="foot.rights">All rights reserved</span></span></footer>
+<footer class="foot"><span>© <span id="year"></span> Potter · <span data-i18n="foot.rights">All rights reserved</span></span><span class="devinfo" id="deviceInfo"></span></footer>
 
 <div id="projModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="pmTitle"><article class="glass sheet" id="projSheet"></article></div>
 <div id="reader" class="modal reader" hidden role="dialog" aria-modal="true" aria-labelledby="rdTitle"><article class="glass sheet" id="readerSheet"></article></div>
@@ -113,6 +126,34 @@
   <button type="button" class="nav-arrow next" id="lbNext" aria-label="Next">›</button>
 </div>
 <div id="toasts" aria-live="polite"></div>
+
+<!-- Bottom navigation bar (mobile/tablet only) -->
+<nav id="bottom-nav" aria-label="Bottom navigation">
+  <button type="button" class="bnav-btn" data-nav="top">
+    <span class="bnav-icon">🏠</span><span class="bnav-label" data-i18n="nav.home">Home</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="about">
+    <span class="bnav-icon">👤</span><span class="bnav-label" data-i18n="nav.about">About</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="skills">
+    <span class="bnav-icon">⚡</span><span class="bnav-label" data-i18n="nav.skills">Skills</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="projects">
+    <span class="bnav-icon">🗂️</span><span class="bnav-label" data-i18n="nav.projects">Projects</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="gallery">
+    <span class="bnav-icon">🖼️</span><span class="bnav-label" data-i18n="nav.gallery">Gallery</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="blog">
+    <span class="bnav-icon">📝</span><span class="bnav-label" data-i18n="nav.blog">Blog</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="contact">
+    <span class="bnav-icon">✉️</span><span class="bnav-label" data-i18n="nav.contact">Contact</span>
+  </button>
+</nav>
+
+<!-- Language switcher overlay (mobile bottom sheet) -->
+<div id="bnav-lang-row" class="bnav-lang-row" role="group" aria-label="Switch language"></div>
 
 <script src="js/content.js"></script><script src="js/media.js"></script><script src="js/works.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
 </body></html>

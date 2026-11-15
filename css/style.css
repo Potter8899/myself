@@ -1,6 +1,6 @@
 :root{--black:#050609;--black2:#090B12;--red-d:#8B101C;--red:#FF304F;--cyan:#00D9FF;--blue-d:#102B65;--blue:#164BFF;--w:#fff;
 --glass:rgba(16,43,101,.2);--line:rgba(0,217,255,.2);--r:16px;--muted:#a9b7d4;
---display:"Unbounded","IBM Plex Sans Thai",system-ui,sans-serif;--body:"IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif}
+--display:"Unbounded","IBM Plex Sans Thai",system-ui,sans-serif;--body:"IBM Plex Sans Thai","IBM Plex Sans","Noto Sans Thai",system-ui,sans-serif}
 *{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth;scroll-padding-top:90px;overflow-x:clip}
 body{margin:0;overflow-x:clip;background:var(--black);color:var(--w);font:16px/1.7 var(--body);overflow-x:hidden}
 img{max-width:100%}a{color:var(--cyan)}h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em;font-family:var(--display);font-weight:500}
@@ -177,10 +177,10 @@ body.has-tabs .sec{min-height:60vh;padding-top:36px}
 #gate{display:none;position:fixed;inset:0;z-index:110;place-content:center;text-align:center;padding:24px;background:radial-gradient(60% 50% at 50% 40%,rgba(22,75,255,.22),transparent 70%),rgba(5,6,9,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 html.gate-on #gate{display:grid;animation:lfade .5s}
 html.gate-on #loader{display:none}
-.gate-box{width:min(520px,100%)}
+.gate-box{width:min(640px,100%)}
 .gate-logo{font:700 1.6rem var(--display);letter-spacing:.28em;margin:0 0 10px}.gate-logo span{color:var(--red)}
 .gate-title{color:var(--muted);margin:0 0 28px;font-size:1.05rem}.gate-title i{font-style:normal;color:var(--cyan);padding:0 .3em}
-.gate-btns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gate-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .gate-btn{display:grid;gap:4px;padding:26px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--glass);color:#fff;cursor:pointer;font:inherit;transition:transform .25s,border-color .25s,box-shadow .25s}
 .gate-btn b{font:500 1.35rem var(--display)}.gate-btn small{color:var(--muted)}
 .gate-btn:hover,.gate-btn:focus-visible{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 0 30px rgba(0,217,255,.35)}
@@ -191,5 +191,171 @@ html.gate-on #loader{display:none}
 .lbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--red),var(--cyan));box-shadow:0 0 14px var(--cyan)}
 #loader small{display:block;letter-spacing:.12em;color:var(--muted);font-family:var(--body)}
 #loadPct{font-family:var(--display)!important;color:#fff!important;margin-bottom:4px}
-@media (max-width:420px){.gate-btns{grid-template-columns:1fr}}
+@media (max-width:560px){.gate-btns{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){html.gate-on #gate,#loader{animation:none}.gate-btn{transition:none}}
+
+/* language switcher (TH / EN / RU) */
+.langs{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.langs button{background:none;border:0;color:#d6e2ff;font:inherit;font-size:.8rem;padding:6px 10px;cursor:pointer;transition:background .2s,color .2s}
+.langs button:hover{color:var(--cyan)}.langs button.on{background:rgba(0,217,255,.18);color:#fff}
+
+/* ---- phones / tablets / touch (html[data-device] + html.touch are set by the detector in <head>) */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:rgba(0,217,255,.18)}
+.nav{top:calc(10px + env(safe-area-inset-top,0px))}
+.foot{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}.devinfo{color:var(--muted)}
+.modal{padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px))}
+.sheet{max-height:92vh;max-height:calc(100dvh - 32px);overscroll-behavior:contain}
+.lb img{touch-action:pan-y pinch-zoom}
+input[type=search]{font-size:16px} /* stops iOS from zooming the page when a field is focused */
+html.touch .btn,html.touch .btn.small,html.touch .chips.filter button,html.touch .langs button,html.touch #navLinks a,html.touch .pager button,html.touch .skill{min-height:44px}
+html.touch .btn.small{display:inline-flex;align-items:center;justify-content:center}
+html.touch .langs button{min-width:44px}html.touch .burger{width:44px;height:44px}
+html.touch .chips.filter button{padding:8px 14px}html.touch a.chip{padding:10px 14px}
+html.touch .x{width:44px;height:44px;font-size:1.4rem;right:6px;top:6px}
+html.touch .masonry figcaption{opacity:1}
+html.touch .proj:hover,html.touch .skill:hover,html.touch .post:hover,html.touch .gate-btn:hover{transform:none}
+html.touch .proj:hover .cover img,html.touch .masonry figure:hover img{transform:none}
+html.touch .nav-arrow{width:52px;height:52px}
+html[data-device=mobile] .tilt{max-width:min(78vw,340px)}
+html[data-device=mobile] .sec{padding:34px 0}
+html[data-device=mobile] .sheet{padding:20px 16px}
+html[data-device=mobile] .proj-grid{grid-template-columns:1fr}
+html[data-device=mobile] .foot{justify-content:center;text-align:center}
+html[data-device=mobile] .nav-arrow{top:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:none}
+html[data-device=mobile] .nav-arrow.prev{left:22px}html[data-device=mobile] .nav-arrow.next{right:22px}
+@media (hover:none){.proj:hover,.skill:hover,.post:hover{transform:none}}
+@media (max-width:380px){.logo{display:none}.langs button{padding:6px 8px}}
+
+/* ============================================================
+   DEVICE BADGE + MOBILE BOTTOM NAV  (เพิ่มโดย Claude)
+   ============================================================ */
+
+/* ---- Device badge (แสดงอุปกรณ์ที่ใช้) ---- */
+#device-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--glass);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  font-size: .82rem; color: #d6e2ff; white-space: nowrap;
+  transition: border-color .3s, box-shadow .3s;
+  cursor: default; user-select: none;
+}
+#device-badge .dv-icon { font-size: 1rem; line-height: 1; }
+#device-badge .dv-label { font-family: var(--display); font-size: .78rem; letter-spacing: .06em; }
+#device-badge .dv-type { color: var(--cyan); font-weight: 600; }
+#device-badge:hover { border-color: var(--cyan); box-shadow: 0 0 18px rgba(0,217,255,.25); }
+
+/* badge ใน hero — desktop & tablet */
+.hero-badge-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+html[data-device=mobile] .hero-badge-row { justify-content: center; }
+
+/* ---- Bottom navigation bar (มือถือเท่านั้น) ---- */
+#bottom-nav {
+  display: none; /* ซ่อนบน desktop */
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;
+  background: rgba(5,6,9,.88); border-top: 1px solid var(--line);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom,0px));
+  grid-template-columns: repeat(7, 1fr);
+}
+html[data-device=mobile] #bottom-nav,
+html[data-device=tablet] #bottom-nav { display: grid; }
+
+/* บน mobile + tablet: ซ่อน hamburger+topnav, ให้ใช้ bottom nav แทน */
+html[data-device=mobile] .burger,
+html[data-device=tablet] .burger { display: none !important; }
+html[data-device=mobile] #navLinks,
+html[data-device=tablet] #navLinks {
+  /* ซ่อน desktop nav links แต่เก็บไว้สำหรับ aria/routing */
+  position: absolute !important; left: -9999px !important; opacity: 0 !important;
+  visibility: hidden !important; pointer-events: none !important;
+}
+
+.bnav-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 6px 2px; border: none; background: none;
+  color: #7a8db0; cursor: pointer; font: inherit; border-radius: 10px;
+  transition: color .2s, background .2s; min-height: 48px; position: relative;
+}
+.bnav-btn .bnav-icon { font-size: 1.25rem; line-height: 1; }
+.bnav-btn .bnav-label { font-size: .6rem; letter-spacing: .04em; white-space: nowrap; font-family: var(--body); }
+.bnav-btn.on { color: var(--cyan); }
+.bnav-btn.on .bnav-icon { filter: drop-shadow(0 0 6px var(--cyan)); }
+.bnav-btn.on::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 28px; height: 2px; border-radius: 0 0 2px 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--blue));
+}
+.bnav-btn:active { background: rgba(0,217,255,.1); color: #fff; }
+
+/* เพิ่ม padding ด้านล่าง main content เพื่อกันทับ bottom nav */
+html[data-device=mobile] main,
+html[data-device=tablet] main {
+  padding-bottom: calc(70px + env(safe-area-inset-bottom,0px));
+}
+html[data-device=mobile] .foot,
+html[data-device=tablet] .foot {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom,0px));
+}
+html[data-device=mobile] #toasts,
+html[data-device=tablet] #toasts {
+  bottom: calc(72px + env(safe-area-inset-bottom,0px));
+}
+
+/* ---- Bottom sheet (modal จากด้านล่างบนมือถือ) ---- */
+html[data-device=mobile] .modal,
+html[data-device=tablet] .modal {
+  align-items: flex-end; padding: 0;
+}
+html[data-device=mobile] .modal .sheet,
+html[data-device=tablet] .modal .sheet {
+  width: 100%; border-radius: 20px 20px 0 0;
+  max-height: 92dvh; overflow-y: auto; overscroll-behavior: contain;
+  animation: slideUp .35s cubic-bezier(.2,.9,.3,1) both;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom,0px));
+  /* pull-to-dismiss handle */
+  padding-top: 28px; position: relative;
+}
+html[data-device=mobile] .modal .sheet::before,
+html[data-device=tablet] .modal .sheet::before {
+  content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 36px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25);
+}
+@keyframes slideUp { from { transform: translateY(100%); opacity: .8; } to { transform: none; opacity: 1; } }
+
+/* lightbox บน mobile: ป้องกันกดทะลุ */
+html[data-device=mobile] .lb,
+html[data-device=tablet] .lb {
+  align-items: center; padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+}
+
+/* ---- ปรับ proj-grid บน tablet ---- */
+html[data-device=tablet] .proj-grid { grid-template-columns: repeat(2, 1fr); }
+html[data-device=tablet] .proj.feat { grid-column: span 2; }
+html[data-device=tablet] .masonry { columns: 2 240px; }
+
+/* ---- เพิ่ม touch feedback บน mobile ---- */
+html[data-device=mobile] .btn:active,
+html[data-device=tablet] .btn:active {
+  transform: scale(.96) !important; opacity: .85;
+}
+html[data-device=mobile] .proj:active,
+html[data-device=tablet] .proj:active { transform: scale(.98); }
+
+/* ---- Lang switcher ใน bottom nav ---- */
+.bnav-lang-row {
+  display: none;
+  position: fixed; bottom: calc(60px + env(safe-area-inset-bottom,0px)); left: 0; right: 0;
+  z-index: 46; padding: 10px 16px;
+  background: rgba(5,6,9,.92); border-top: 1px solid var(--line);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  gap: 10px; justify-content: center; animation: slideUp .25s;
+}
+.bnav-lang-row.open { display: flex; }
+html[data-device=desktop] .bnav-lang-row { display: none !important; }
+
+/* ---- footer devinfo ปรับ ---- */
+.devinfo-block { display: flex; align-items: center; gap: 8px; }
+.devinfo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); flex-shrink: 0; }
+

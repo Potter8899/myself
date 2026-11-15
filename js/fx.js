@@ -8,7 +8,7 @@
   var cv = document.getElementById('space'), ctx = cv && cv.getContext('2d'), stars = [], shoot = null, W = 0, H = 0, my = 0, scrollY = 0, mx = 0, running = true;
   function size() {
     var d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
-    var n = Math.round(Math.min(220, W * H / 9000)); stars = [];
+    var n = Math.round(Math.min((window.DEVICE && DEVICE.type === 'mobile') ? 90 : 220, W * H / 9000)); stars = [];
     for (var i = 0; i < n; i++) { var z = Math.random(); stars.push({ x: Math.random() * W, y: Math.random() * H, z: z < .6 ? 1 : z < .9 ? 2 : 3, p: Math.random() * 6.28, c: Math.random() < .15 ? '#ff7a8c' : Math.random() < .3 ? '#7fe9ff' : '#fff' }); }
     draw(0);
   }
@@ -28,7 +28,10 @@
     } else if (!reduce && Math.random() < .0025) shoot = { x: Math.random() * W, y: Math.random() * H * .5, vx: 9 + Math.random() * 5, vy: 3 + Math.random() * 3, l: 50 };
   }
   if (cv && ctx) {
-    size(); addEventListener('resize', size);
+    size(); var lastW = innerWidth, lastH = innerHeight;
+    addEventListener('resize', function () { // phones fire resize when the address bar shows/hides: only rebuild on a real size change
+      if (innerWidth !== lastW || Math.abs(innerHeight - lastH) > 160) { lastW = innerWidth; lastH = innerHeight; size(); }
+    });
     if (!reduce) {
       addEventListener('pointermove', function (e) { mx = e.clientX; my = e.clientY; }, { passive: true });
       addEventListener('scroll', function () { scrollY = pageYOffset; }, { passive: true });
