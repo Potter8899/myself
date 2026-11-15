@@ -8,15 +8,11 @@
 window.SITE_CONTENT = {
   profile: {
     name: "Potter",
-    // ชื่อ-ชั้น-ชื่อเล่น (แสดงใต้ชื่อ POTTER ในหน้าแรก) — ช่อง en เว้นว่างได้ จะใช้ภาษาไทยแทน
-    fullName: { th: "ด.ช. พัฒนพล ภักดีอำนาจ", en: "" },   // ใส่ชื่อภาษาอังกฤษในช่อง en ถ้าต้องการ
-    grade:    { th: "ม.2", en: "Grade 8 (Mathayom 2)" },
-    nickname: { th: "พอตเตอร์ (Potter)", en: "Potter" },
     photo: "img/profile.jpg",                      // วางรูปจริงของคุณชื่อ profile.jpg ในโฟลเดอร์ img/ (ถ้าไม่มี จะแสดงตัวอักษร P)
     tagline: { th: "Developer · Minecraft · 3D Modeling", en: "Developer · Minecraft · 3D Modeling" },
     intro:   { th: "ผมสร้างเว็บ โปรแกรม และม็อด Minecraft พร้อมโมเดล 3D ด้วย Blockbench", en: "I build websites, programs and Minecraft mods, with 3D models made in Blockbench." },
-    who:     { th: "ผมคือ ด.ช. พัฒนพล ภักดีอำนาจ ชั้น ม.2 ชื่อเล่น พอตเตอร์ (Potter) นักพัฒนาที่หลงใหลในเทคโนโลยี ชอบสร้างระบบที่ใช้งานได้จริง ตั้งแต่เว็บไซต์ บอท Discord ไปจนถึงม็อดและปลั๊กอินสำหรับเซิร์ฟเวอร์ Minecraft",
-               en: "I am Potter, a Grade 8 student and developer who loves technology and building systems that really work — from websites and Discord bots to mods and plugins for Minecraft servers." },
+    who:     { th: "ผมคือ Potter นักพัฒนาที่หลงใหลในเทคโนโลยี ชอบสร้างระบบที่ใช้งานได้จริง ตั้งแต่เว็บไซต์ บอท Discord ไปจนถึงม็อดและปลั๊กอินสำหรับเซิร์ฟเวอร์ Minecraft",
+               en: "I am Potter, a developer who loves technology and building systems that really work — from websites and Discord bots to mods and plugins for Minecraft servers." },
     story:    { th: "", en: "" },   // เรื่องของคุณ (รองรับ Markdown)
     journey:  { th: "", en: "" },   // เส้นทางการพัฒนา
     goals:    { th: "", en: "" },   // เป้าหมาย

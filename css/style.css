@@ -30,18 +30,18 @@ img{max-width:100%}a{color:var(--cyan)}h1,h2,h3,h4{line-height:1.2;margin:0 0 .5
 .link{background:none;border:0;color:var(--cyan);cursor:pointer;font:inherit;padding:4px;text-decoration:underline}
 main{width:min(1180px,94%);margin:0 auto}
 /* hero */
-.hero{min-height:86vh;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:30px 0}
+.hero{min-height:86vh;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding:30px 0}
 .hello{margin:0;color:var(--muted);font-size:1.05rem}
 .hero h1{font-size:clamp(2.6rem,9vw,6.4rem);letter-spacing:.02em;margin:.05em 0 .15em;font-weight:700;text-shadow:0 0 40px rgba(255,48,79,.35)}
 .split span{display:inline-block;opacity:0;transform:translateY(40px);animation:up .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*.06s + .5s)}
 @keyframes up{to{opacity:1;transform:none}}
 .welcome{font:500 clamp(1.1rem,2.4vw,1.5rem) var(--display);margin:.2em 0}.lead{color:#cdd8ee;max-width:56ch}.tagline{color:var(--cyan);margin:.4em 0 1.2em}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
-.tilt-wrap{margin:0;perspective:1000px;justify-self:center;position:relative;padding:18px}
+.tilt-wrap{margin:0;perspective:1000px;justify-self:center;position:relative;padding:30px}
 .orbit i{position:absolute;inset:0;border:1px solid var(--line);border-radius:50%;animation:spin 40s linear infinite;pointer-events:none}
 .orbit i:nth-child(2){inset:-14px 24px;border-color:rgba(255,48,79,.3);animation-duration:60s;animation-direction:reverse}
 @keyframes spin{to{transform:rotate(360deg)}}
-.tilt{position:relative;display:block;width:min(520px,88vw);aspect-ratio:4/5;padding:0;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#0a0f1d;cursor:zoom-in;transform-style:preserve-3d;will-change:transform;box-shadow:0 0 34px rgba(0,217,255,.16),0 20px 50px rgba(0,0,0,.6);touch-action:pan-y;-webkit-tap-highlight-color:transparent;transition:border-color .4s,box-shadow .5s}
+.tilt{position:relative;display:block;width:min(340px,76vw);aspect-ratio:4/5;padding:0;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#0a0f1d;cursor:zoom-in;transform-style:preserve-3d;will-change:transform;box-shadow:0 0 34px rgba(0,217,255,.16),0 20px 50px rgba(0,0,0,.6);touch-action:pan-y;-webkit-tap-highlight-color:transparent;transition:border-color .4s,box-shadow .5s}
 .tilt img{display:block;width:100%;height:100%;object-fit:cover;filter:blur(6px) brightness(.45) saturate(.8);transform:scale(1.07);transition:filter .6s,transform .6s}
 .tilt .fallback{position:absolute;inset:0;display:grid;place-items:center;font:700 7rem var(--display);background:linear-gradient(135deg,var(--blue-d),var(--red-d));color:#fff;filter:blur(3px) brightness(.7);transition:filter .6s}
 .tilt .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,9,.25),rgba(5,6,9,.8));transition:opacity .6s}
@@ -146,29 +146,3 @@ body.page-out main{opacity:0;transition:opacity .25s}
  .tilt-wrap{padding:14px;max-width:100%}.orbit i:nth-child(2){inset:-6px 14px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.fx{opacity:1}.split span{opacity:1;transform:none}}
-
-/* ---- tabs: แสดงทีละแท็บ (เปิดใช้เมื่อ JS ใส่ class "has-tabs" ที่ body) ---- */
-body.has-tabs main>[data-pane]:not(.pane-on){display:none}
-body.has-tabs main>.pane-on{animation:paneIn .45s ease both}
-@keyframes paneIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-body.has-tabs .sec{min-height:60vh;padding-top:36px}
-/* ---- name card ---- */
-.namecard{margin:0 0 1.2em;padding:14px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;max-width:520px;text-align:left}
-.namecard dt{color:var(--muted);font-size:.85rem}.namecard dd{margin:0;font-weight:600;color:#fff}
-.namecard:empty{display:none}
-/* ---- downloads ---- */
-.file-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.file{display:flex;gap:12px;align-items:center;padding:14px 16px;text-decoration:none;color:#fff}
-.file:hover{border-color:var(--cyan)}.file .ic{font-size:1.6rem}.file small{display:block;color:var(--muted)}
-@media (max-width:900px){.namecard{margin-left:auto;margin-right:auto}}
-
-/* กันหน้าล้นจอบนมือถือ + รูปใหญ่เต็มความกว้างการ์ด */
-.hero>*{min-width:0}.namecard dd{overflow-wrap:anywhere}
-@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.tilt-wrap{width:100%}.tilt{width:100%;max-width:520px;margin:0 auto}}
-
-/* ---- พรอมต์ใต้รูปโปรไฟล์ (lightbox) ---- */
-.lb-prompt{margin:14px auto 0;max-width:min(760px,92vw);text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(16,43,101,.28)}
-.lbp-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.lbp-head strong{color:var(--cyan)}
-.lb-prompt p{margin:6px 0;color:#cdd8ee;font-size:.9rem}
-.lb-prompt pre{margin:0;max-height:22vh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:.82rem/1.55 ui-monospace,Consolas,monospace;color:#e8f0ff;user-select:text}
-.lb.has-prompt img{max-height:48vh}.lb.has-prompt .sheet,.lb.has-prompt figure{max-height:96vh;overflow-y:auto}

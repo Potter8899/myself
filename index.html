@@ -40,14 +40,13 @@
 </header>
 
 <main id="main">
-<section id="top" class="hero" data-pane="top">
+<section id="top" class="hero">
   <div class="hero-text">
     <p class="hello"><span data-i18n="hero.hello">Hello, I'm</span></p>
     <h1 id="heroName" class="split">POTTER</h1>
     <p class="welcome" data-i18n="hero.welcome">Welcome to my digital universe.</p>
     <p class="lead" id="intro" data-i18n="hero.sub"></p>
     <p class="tagline" id="tagline"></p>
-    <dl class="namecard glass" id="nameCard" aria-label="Name"></dl>
     <div class="cta"><a href="#contact" class="btn primary mag" data-nav="contact" data-i18n="hero.cta1">Contact me</a><a href="#projects" class="btn mag" data-nav="projects" data-i18n="hero.cta2">See my work</a></div>
   </div>
   <figure class="tilt-wrap">
@@ -59,30 +58,29 @@
   </figure>
 </section>
 
-<section class="strip" aria-label="Highlights" data-pane="top">
+<section class="strip" aria-label="Highlights">
   <div class="glass pad"><h3 data-i18n="strip.interests">Interested in right now</h3><div class="chips" id="stripInterests"></div></div>
   <div class="glass pad"><h3 data-i18n="strip.latest">Latest update</h3><div id="stripLatest"></div></div>
   <div class="glass pad"><h3 data-i18n="strip.find">Find me</h3><div class="chips" id="stripSocial"></div></div>
 </section>
 
-<section id="about" class="sec" data-pane="about"><h2 data-i18n="sec.about">About me</h2><div id="aboutBody" class="about-grid"></div>
+<section id="about" class="sec"><h2 data-i18n="sec.about">About me</h2><div id="aboutBody" class="about-grid"></div>
   <h3 class="sub" data-i18n="sec.timeline">Development timeline</h3><ol id="timelineList" class="timeline"></ol></section>
 
-<section id="skills" class="sec" data-pane="skills"><h2 data-i18n="sec.skills">Skills & technology</h2><div class="chips filter" id="skillFilter" role="group"></div><div id="skillList" class="skill-cols"></div></section>
+<section id="skills" class="sec"><h2 data-i18n="sec.skills">Skills & technology</h2><div class="chips filter" id="skillFilter" role="group"></div><div id="skillList" class="skill-cols"></div></section>
 
-<section id="projects" class="sec" data-pane="projects"><h2 data-i18n="sec.projects">Projects</h2>
+<section id="projects" class="sec"><h2 data-i18n="sec.projects">Projects</h2>
   <div class="toolbar"><input id="projQ" type="search" maxlength="60" data-i18n-ph="search" placeholder="Search…" aria-label="Search projects"><div class="chips filter" id="projCats" role="group"></div></div>
   <div id="projList" class="proj-grid"></div><div class="more"><button class="btn" id="projMore" type="button" hidden data-i18n="loadMore">Load more</button></div></section>
 
-<section id="gallery" class="sec" data-pane="gallery"><h2 data-i18n="sec.gallery">Gallery</h2><div class="chips filter" id="galCats" role="group"></div>
-  <div id="galList" class="masonry"></div><div class="more"><button class="btn" id="galMore" type="button" hidden data-i18n="loadMore">Load more</button></div>
-  <div id="filesBox" hidden><h3 class="sub" data-i18n="sec.files">Files</h3><div id="fileList" class="file-list"></div></div></section>
+<section id="gallery" class="sec"><h2 data-i18n="sec.gallery">Gallery</h2><div class="chips filter" id="galCats" role="group"></div>
+  <div id="galList" class="masonry"></div><div class="more"><button class="btn" id="galMore" type="button" hidden data-i18n="loadMore">Load more</button></div></section>
 
-<section id="blog" class="sec" data-pane="blog"><h2 data-i18n="sec.blog">Blog & Devlog</h2>
+<section id="blog" class="sec"><h2 data-i18n="sec.blog">Blog & Devlog</h2>
   <div class="toolbar"><input id="blogQ" type="search" maxlength="60" data-i18n-ph="search" placeholder="Search…" aria-label="Search posts"><div class="chips filter" id="blogCats" role="group"></div></div>
   <div id="blogList" class="blog-list"></div><div class="pager" id="blogPager"></div></section>
 
-<section id="contact" class="sec" data-pane="contact"><h2 data-i18n="sec.contact">Contact</h2>
+<section id="contact" class="sec"><h2 data-i18n="sec.contact">Contact</h2>
   <div class="glass pad contact-side"><p class="lead" data-i18n="ct.lead"></p><div class="chips" id="contactLinks"></div></div></section>
 </main>
 
@@ -94,14 +92,10 @@
 <div id="lightbox" class="modal lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
   <button type="button" class="x" data-close data-i18n-aria="close" aria-label="Close">✕</button>
   <button type="button" class="nav-arrow prev" id="lbPrev" aria-label="Previous">‹</button>
-  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption>
-    <div id="lbPrompt" class="lb-prompt" hidden>
-      <div class="lbp-head"><strong id="lbpTitle"></strong><button type="button" class="btn small" id="lbpCopy"></button></div>
-      <p id="lbpNote"></p><pre id="lbpText"></pre>
-    </div></figure>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
   <button type="button" class="nav-arrow next" id="lbNext" aria-label="Next">›</button>
 </div>
 <div id="toasts" aria-live="polite"></div>
 
-<script src="js/content.js"></script><script src="js/media.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
+<script src="js/content.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
 </body></html>

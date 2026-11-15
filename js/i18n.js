@@ -21,8 +21,6 @@ window.I18N = {
     'tl.milestone': 'ก้าวสำคัญ', 'tl.project': 'โปรเจกต์', 'tl.learning': 'การเรียนรู้', 'tl.tech': 'เทคโนโลยีใหม่', 'tl.future': 'แผนในอนาคต',
     details: 'ดูรายละเอียด', github: 'GitHub', demo: 'ดูของจริง', gallery: 'ภาพประกอบ', readMin: 'นาทีอ่าน', blogAll: 'ทุกหมวด',
     zoom: 'ซูม', 'foot.rights': 'สงวนลิขสิทธิ์',
-    'prompt.title': 'รูปนี้สร้างด้วย AI', 'prompt.note': 'ผมส่งรูปหน้าให้ ChatGPT พร้อมพรอมต์นี้ เพื่อตกแต่งเป็นรูปแบบนี้', 'prompt.copy': 'คัดลอกพรอมต์', 'prompt.copied': 'คัดลอกแล้ว ✓',
-    'name.full': 'ชื่อ-นามสกุล', 'name.grade': 'ระดับชั้น', 'name.nick': 'ชื่อเล่น', 'sec.files': 'ไฟล์ดาวน์โหลด', download: 'ดาวน์โหลด',
   },
   en: {
     'ct.lead': 'Want to talk or work together? Reach me through the links below.',
@@ -45,7 +43,5 @@ window.I18N = {
     'tl.milestone': 'Milestone', 'tl.project': 'Project', 'tl.learning': 'Learning', 'tl.tech': 'New tech', 'tl.future': 'Future plan',
     details: 'View details', github: 'GitHub', demo: 'Live demo', gallery: 'Images', readMin: 'min read', blogAll: 'All categories',
     zoom: 'Zoom', 'foot.rights': 'All rights reserved',
-    'prompt.title': 'This image was made with AI', 'prompt.note': 'I gave ChatGPT my face photo with this prompt to get this picture:', 'prompt.copy': 'Copy prompt', 'prompt.copied': 'Copied ✓',
-    'name.full': 'Full name', 'name.grade': 'Grade', 'name.nick': 'Nickname', 'sec.files': 'Downloads', download: 'Download',
   }
 };
