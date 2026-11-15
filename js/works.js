@@ -34,7 +34,10 @@ window.WORKS = [
   //   featured: true,
   // },
 
-  { id: "3d-models", title: "3D Models", desc: "โมเดลและแอนิเมชันสำหรับ Minecraft", descEn: "Models and animations for Minecraft.",
-    type: "minecraft", status: "live", tags: "Blockbench, Animation" },
+  { id: "lyrics-subtitle-ai", title: "ระบบเขียนซับหลากหลายภาษาจากเพลง", titleEn: "Multilingual Lyrics Subtitle System",
+    desc: "ระบบสร้างซับไตเติลหลายภาษาจากเพลงโดยอัตโนมัติ", descEn: "A system that automatically generates multilingual subtitles from songs.",
+    type: "ai", status: "wip", tags: "Python, HTML5, PySide6, AI", featured: true,
+    detail: "**ภาษาและเครื่องมือ**\n\n- Python\n- HTML5\n- PySide6\n\n**AI ที่ใช้ในการรวมงาน**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**สถานะ:** อยู่ในช่วงพัฒนา",
+    detailEn: "**Languages & tools**\n\n- Python\n- HTML5\n- PySide6\n\n**AI used to build it**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**Status:** in development" },
 
 ];
