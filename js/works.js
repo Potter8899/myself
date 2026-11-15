@@ -40,4 +40,10 @@ window.WORKS = [
     detail: "**ภาษาและเครื่องมือ**\n\n- Python\n- HTML5\n- PySide6\n\n**AI ที่ใช้ในการรวมงาน**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**สถานะ:** อยู่ในช่วงพัฒนา",
     detailEn: "**Languages & tools**\n\n- Python\n- HTML5\n- PySide6\n\n**AI used to build it**\n\n1. Claude Opus 4.6\n2. Gemini Hydrogen high\n3. Gemini 4 Argon\n\n**Status:** in development" },
 
+  { id: "ai-desktop-assistant", title: "AI ผู้ช่วยหน้าคอมพิวเตอร์", titleEn: "AI Desktop Assistant",
+    desc: "AI ผู้ช่วยหน้าคอมพิวเตอร์ ถามความรู้จาก AI และพูดคุยได้", descEn: "An AI assistant on your computer screen: ask it for knowledge and chat with it.",
+    type: "ai", status: "wip", img: "img/ww1.png", tags: "Python, XAML, CSS, C, AI",
+    detail: "**ความสามารถ**\n\n- ผู้ช่วยหน้าคอมพิวเตอร์\n- สอบถามหาความรู้จาก AI\n- พูดคุยได้\n\n**ภาษาและเครื่องมือ**\n\n- Python\n- XAML\n- CSS\n- C\n\n**AI ผู้ช่วย**\n\n- Claude Sonnet 5.5\n\n**สถานะ:** กำลังพัฒนา",
+    detailEn: "**Features**\n\n- Assistant on the computer screen\n- Ask AI for knowledge\n- Can talk with you\n\n**Languages & tools**\n\n- Python\n- XAML\n- CSS\n- C\n\n**AI**\n\n- Claude Sonnet 5.5\n\n**Status:** in development" },
+
 ];
