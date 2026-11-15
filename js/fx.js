@@ -71,6 +71,7 @@
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   // ---- loading screen
-  FX.hideLoader = function () { var l = document.getElementById('loader'); if (l) { l.classList.add('done'); setTimeout(function () { l.remove(); }, 800); } };
+  FX.hold = document.documentElement.classList.contains('gate-on'); // while the language gate / loading screen runs, nothing may hide the loader early
+  FX.hideLoader = function (force) { if (FX.hold && force !== true) return; var l = document.getElementById('loader'); if (l) { l.classList.add('done'); setTimeout(function () { l.remove(); }, 800); } };
   setTimeout(FX.hideLoader, 2500); // never block the page if the API is slow
 })();

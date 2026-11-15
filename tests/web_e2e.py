@@ -27,16 +27,19 @@ def png():
 IMG = png()
 with sync_playwright() as p:
     b = p.chromium.launch()
-    def mk(vw=1280, content=True, reduced=False):
+    def mk(vw=1280, content=True, reduced=False, first=False):
         ctx = b.new_context(viewport={"width": vw, "height": 900}, reduced_motion="reduce" if reduced else "no-preference"); pg = ctx.new_page(); errs = []; hosts = set()
         pg.on("pageerror", lambda e: errs.append(str(e))); pg.on("console", lambda m: errs.append(m.text) if m.type == "error" and "Failed to load resource" not in m.text and "ERR_FAILED" not in m.text else None)
         pg.on("request", lambda r: hosts.add(re.sub(r"^(\w+://[^/]+).*", r"\1", r.url)))
         pg.route(re.compile(r"https://fonts\..*"), lambda r, q: r.abort())
         if content: pg.route("**/js/content.js", lambda r, q: r.fulfill(status=200, content_type="application/javascript", body=TEST_CONTENT))
         # media.js is stubbed: the tests use their own photo/gallery (media.js itself is tested at the end)
+        pg.route("**/js/works.js", lambda r, q: r.fulfill(status=200, content_type="application/javascript", body="window.WORKS=[];" if content else open(os.path.join(ROOT, "js", "works.js"), encoding="utf-8").read()))
         pg.route("**/js/media.js", lambda r, q: r.fulfill(status=200, content_type="application/javascript", body='window.MEDIA={profilePhoto:"",gallery:[],files:[{name:"Demo file",file:"files/demo.zip"},{name:"Evil",file:"javascript:1"}]};' if content else "window.MEDIA={};"))
         pg.route("**/img/p.png", lambda r, q: r.fulfill(status=200, content_type="image/png", body=IMG))
-        pg.add_init_script("localStorage.setItem('ps_lang','en')"); return pg, errs, hosts
+        
+        if not first: pg.add_init_script("localStorage.setItem('ps_lang','en')")
+        return pg, errs, hosts
     pg, errs, hosts = mk(); pg.goto(f"http://localhost:{PORT}/index.html"); pg.wait_for_selector(".proj", state="attached"); pg.wait_for_timeout(900); pg.add_style_tag(content="body.has-tabs main>[data-pane]:not(.pane-on){display:block!important;animation:none!important}", ) ; pg.evaluate("document.querySelectorAll('.fxi').forEach(e=>e.classList.add('in'))")  # legacy checks look at every section at once; the tab test below removes this override
     check("no JS errors", not errs, errs)
     check("only same-origin requests (plus fonts, which are blocked here)", all(h.startswith("http://localhost") or "fonts.g" in h for h in hosts), hosts)
@@ -85,7 +88,7 @@ with sync_playwright() as p:
     check("reduced motion", pr.evaluate("getComputedStyle(document.querySelector('#heroName span')).opacity") == "1" and pr.evaluate("getComputedStyle(document.querySelector('.nebula')).animationName") == "none")
     # shipped default content (no override): sections show friendly empty states, no errors
     pd, derrs, _ = mk(content=False); pd.goto(f"http://localhost:{PORT}/index.html"); pd.wait_for_selector(".proj", state="attached"); pd.wait_for_timeout(700); pd.add_style_tag(content="body.has-tabs main>[data-pane]:not(.pane-on){display:block!important}")
-    check("default content.js: 3 projects, 18 skills, empty gallery/blog show 'coming soon', no errors", pd.locator(".proj").count() == 3 and pd.locator(".skill").count() == 18 and "Nothing here yet" in pd.locator("#blogList").inner_text() and "Nothing here yet" in pd.locator("#galList").inner_text() and not derrs, derrs)
+    check("default content.js: 1 project, 18 skills, empty gallery/blog show 'coming soon', no errors", pd.locator(".proj").count() == 1 and pd.locator(".skill").count() == 18 and "Nothing here yet" in pd.locator("#blogList").inner_text() and "Nothing here yet" in pd.locator("#galList").inner_text() and not derrs, derrs)
     check("no profile photo yet: letter fallback IS shown (card not blank) and click does not open lightbox", pd.evaluate("getComputedStyle(document.getElementById('fallback')).display") != "none" and pd.locator("#fallback").inner_text() == "P")
     pd.locator("#profileCard").click(); pd.wait_for_timeout(200); check("fallback card click: no lightbox", pd.locator("#lightbox").is_hidden())
     try: pd.wait_for_function("getComputedStyle(document.querySelector('#heroName span:last-child')).opacity === '1'", timeout=8000); shown = True
@@ -108,5 +111,28 @@ with sync_playwright() as p:
     pn.close(); pq, qerrs, _ = mk(); pq.route("**/js/media.js", lambda r, q: r.fulfill(status=200, content_type="application/javascript", body='window.MEDIA={profilePhoto:"",profilePrompt:"Make it <b>dark</b>"};'))
     pq.goto(f"http://localhost:{PORT}/index.html"); pq.wait_for_function("document.getElementById('profileImg').complete && !document.getElementById('profileImg').hidden"); pq.click("#profileCard"); pq.wait_for_timeout(400)
     check("profile click shows the AI prompt (as plain text)", pq.locator("#lbPrompt").is_visible() and pq.locator("#lbpText").inner_text() == "Make it <b>dark</b>" and pq.locator("#lbPrompt b").count() == 0 and not qerrs, qerrs)
+
+    # ---- first visit: language gate -> loading screen -> site
+    pgt, gerrs, _ = mk(first=True); pgt.goto(f"http://localhost:{PORT}/index.html"); pgt.wait_for_timeout(500)
+    check("first visit: language gate shown, loader not shown yet", pgt.locator("#gate").is_visible() and not pgt.locator("#loader").is_visible())
+    check("gate offers Thai and English", pgt.locator("#gate [data-lang]").count() == 2)
+    pgt.wait_for_timeout(3000); check("gate stays up (not auto-dismissed by the 2.5s safety timer)", pgt.locator("#gate").is_visible() and pgt.locator("#loader").count() == 1)
+    pgt.click("#gate [data-lang=th]"); pgt.wait_for_timeout(250)
+    check("after choosing: gate gone, loading screen with progress bar shown", not pgt.locator("#gate").is_visible() and pgt.locator("#loader").is_visible() and pgt.locator("#lbarFill").count() == 1)
+    check("loading screen text is in the chosen language (Thai)", "จักรวาล" in pgt.locator("#loadMsg").inner_text())
+    check("language saved for next visit", pgt.evaluate("localStorage.getItem('ps_lang')") == "th")
+    pgt.wait_for_function("!document.getElementById('loader')", timeout=8000); check("loader finishes and is removed, site is in Thai", pgt.locator("#navLinks a").first.inner_text() == "หน้าแรก" and not gerrs, gerrs)
+    pgt.reload(); pgt.wait_for_timeout(500); check("returning visitor: no gate", not pgt.locator("#gate").is_visible())
+    pgt.goto(f"http://localhost:{PORT}/index.html?gate"); pgt.wait_for_timeout(300); check("?gate previews the gate again", pgt.locator("#gate").is_visible())
+    pge, _, _ = mk(first=True); pge.goto(f"http://localhost:{PORT}/index.html"); pge.wait_for_timeout(300); pge.click("#gate [data-lang=en]"); pge.wait_for_function("!document.getElementById('loader')", timeout=8000)
+    check("English choice -> English site", pge.locator("#navLinks a").first.inner_text() == "Home" and pge.evaluate("document.documentElement.lang") == "en")
+    # ---- works.js: simple works list
+    pw, werrs, _ = mk(); pw.route("**/js/works.js", lambda r, q: r.fulfill(status=200, content_type="application/javascript", body="window.WORKS=[{title:'งานหนึ่ง',titleEn:'Work One',desc:'คำอธิบาย',type:'bot',tags:'Py, Bot',link:'https://example.com',img:'img/p.png'},{title:'Hidden',hidden:true},{title:'Plain <b>x</b>',type:'weird',status:'zzz',link:'javascript:1',images:['img/p.png'],id:'my-id'},{desc:'no title'}];"))
+    pw.goto(f"http://localhost:{PORT}/index.html#projects"); pw.wait_for_selector(".proj", state="attached"); pw.wait_for_timeout(500)
+    check("works.js: entries become project cards (hidden / untitled skipped)", pw.locator(".proj").count() == 3, pw.locator(".proj").count())
+    check("works.js: English title used in EN, Thai desc fallback", "Work One" in pw.locator("#projList").inner_text() and "คำอธิบาย" in pw.locator("#projList").inner_text())
+    check("works.js: type alias 'bot' -> Discord Bots chip, comma tags split", "Discord Bots" in pw.locator("#projList").inner_text() and pw.locator(".proj .chip", has_text="Bot").count() >= 1)
+    check("works.js: https link kept, javascript: link dropped, text stays plain", pw.locator(".proj a[href='https://example.com']").count() == 1 and pw.locator(".proj a[href^='javascript']").count() == 0 and pw.locator(".proj b").count() == 0 and pw.evaluate("window.PWNED") is None)
+    pw.goto(f"http://localhost:{PORT}/index.html#/project/my-id"); pw.wait_for_timeout(500); check("works.js: custom id gives a direct link to the detail sheet", pw.locator("#projModal").is_visible() and not werrs, werrs)
     b.close()
 print("\nFAILED:", fails if fails else "none"); sys.exit(1 if fails else 0)

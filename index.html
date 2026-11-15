@@ -16,11 +16,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<script>(function(){try{if(!localStorage.getItem("ps_lang")||/[?&]gate(=|&|$)/.test(location.search))document.documentElement.classList.add("gate-on")}catch(e){document.documentElement.classList.add("gate-on")}})();</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Potter","url":"__SITE_URL__/","sameAs":["https://github.com/Potter8899"],"jobTitle":"Developer"}</script>
 </head>
 <body>
 <div id="progress" aria-hidden="true"></div>
-<div id="loader" aria-hidden="true"><div class="ring"></div><p>POTTER</p></div>
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gate-box">
+    <p class="gate-logo">POTTER<span>.</span></p>
+    <p id="gateTitle" class="gate-title">เลือกภาษา <i>·</i> Choose your language</p>
+    <div class="gate-btns">
+      <button type="button" class="gate-btn" data-lang="th" lang="th"><b>ไทย</b><small>ภาษาไทย</small></button>
+      <button type="button" class="gate-btn" data-lang="en" lang="en"><b>English</b><small>English</small></button>
+    </div>
+  </div>
+</div>
+<div id="loader" role="status" aria-live="polite"><div class="ring"></div><p>POTTER</p><div class="lbar" aria-hidden="true"><i id="lbarFill"></i></div><small id="loadPct">0%</small><small id="loadMsg"></small></div>
 <canvas id="space" aria-hidden="true"></canvas><div class="nebula" aria-hidden="true"></div><div class="grid" aria-hidden="true"></div>
 <div id="cursor" aria-hidden="true"></div>
 <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
@@ -103,5 +114,5 @@
 </div>
 <div id="toasts" aria-live="polite"></div>
 
-<script src="js/content.js"></script><script src="js/media.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
+<script src="js/content.js"></script><script src="js/media.js"></script><script src="js/works.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
 </body></html>

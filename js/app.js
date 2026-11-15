@@ -95,7 +95,25 @@
   var galleryAll = (M.gallery || []).map(function (g) { g = typeof g === 'string' ? { src: g } : g; var cap = g.caption; if (typeof cap === 'string') cap = { th: cap, en: cap };
     return { src: g.src, category: g.category || 'personal', caption: cap || {} }; }).concat(C.gallery || []);
   var posts = (C.blog || []).filter(function (b) { return b.status !== 'draft'; }).sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
-  var projects = (C.projects || []).slice().sort(function (a, b) { return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); });
+  // ผลงานแบบง่าย: js/works.js (ข้อความธรรมดา ไม่ต้องเขียน {th,en}) — แปลงเป็นรูปแบบโปรเจกต์ภายในที่นี่
+  var TYPE_ALIAS = { web: 'website', app: 'application', bot: 'discord_bot', discord: 'discord_bot', mc: 'minecraft', mod: 'minecraft', plugin: 'minecraft' }, STATUSES = ['live', 'wip', 'planned', 'archived'];
+  function bi(th, en) { return { th: th || '', en: en || '' }; }
+  function biv(v, en) { return (v && typeof v === 'object') ? { th: v.th || '', en: v.en || '' } : bi(v == null ? '' : String(v), en); }
+  function worksToProjects() {
+    return (window.WORKS || []).map(function (w, i) {
+      if (!w || w.hidden || !w.title) return null;
+      var type = String(w.type || '').toLowerCase(), pic = function (x) { x = typeof x === 'string' ? { src: x } : (x || {}); return { src: x.src, caption: biv(x.caption, x.captionEn) }; };
+      return {
+        slug: /^[a-z0-9-]+$/.test(w.id || '') ? w.id : 'work-' + (i + 1),
+        category: PCATS.indexOf(TYPE_ALIAS[type] || type) >= 0 ? (TYPE_ALIAS[type] || type) : 'experiment',
+        status: STATUSES.indexOf(w.status) >= 0 ? w.status : 'live', featured: !!w.featured,
+        cover: w.img || w.cover || '', github: w.github || '', demo: w.link || w.demo || '',
+        tags: typeof w.tags === 'string' ? w.tags.split(',').map(function (x) { return x.trim(); }).filter(Boolean) : (w.tags || []),
+        title: biv(w.title, w.titleEn), summary: biv(w.desc, w.descEn), body: biv(w.detail, w.detailEn), images: (w.images || []).map(pic)
+      };
+    }).filter(Boolean);
+  }
+  var projects = (C.projects || []).concat(worksToProjects()).sort(function (a, b) { return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); });
   function pageTitle() { return (P.name || 'Potter') + ' — Personal Space'; }
   function state(box, msg) { clear(box).appendChild(el('div', { class: 'state' }, [el('p', { text: msg })])); }
   function chipRow(box, items, cur, pick) { clear(box); items.forEach(function (it) { box.appendChild(el('button', { type: 'button', class: it.v === cur ? 'on' : '', 'aria-pressed': it.v === cur ? 'true' : 'false', text: it.label, on: { click: function () { pick(it.v); } } })); }); }
@@ -253,5 +271,30 @@
   $('#galMore').addEventListener('click', function () { S.galShown += PAGE.gal; renderGallery(); });
   $('#langBtn').addEventListener('click', function () { lang = lang === 'th' ? 'en' : 'th'; store.set('ps_lang', lang); rerender(); });
   function rerender() { applyI18n(); renderHero(); renderNameCard(); renderFiles(); renderStrip(); renderAbout(); renderSkills(); renderProjects(); renderGallery(); renderBlog(); renderProjectSheet(); renderPost(); }
-  $('#year').textContent = new Date().getFullYear(); rerender(); route(); FX.hideLoader();
+  $('#year').textContent = new Date().getFullYear(); rerender(); route();
+
+  // ---- first visit: choose language -> loading screen -> site (preview any time with  ?gate  in the URL)
+  function runLoading() {
+    var fill = $('#lbarFill'), pct = $('#loadPct'), loaderEl = $('#loader'); if (!loaderEl) return;
+    $('#loadMsg').textContent = t('load.msg');
+    var dur = FX.reduce ? 700 : 2000, t0 = performance.now(), finished = false;
+    function finish() { if (finished) return; finished = true; fill.style.width = '100%'; pct.textContent = '100%'; FX.hold = false; setTimeout(function () { FX.hideLoader(true); }, FX.reduce ? 80 : 260); }
+    function step(now) {
+      if (finished) return;
+      var k = Math.min(1, (now - t0) / dur), v = (1 - Math.pow(1 - k, 2)) * 100;
+      if (document.readyState !== 'complete') v = Math.min(v, 92); // wait for fonts/images, never finish early
+      fill.style.width = v.toFixed(1) + '%'; pct.textContent = Math.round(v) + '%';
+      if (v >= 100) finish(); else requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step); setTimeout(finish, dur + 5000); // safety net (e.g. background tab or very slow network)
+  }
+  if (document.documentElement.classList.contains('gate-on')) {
+    $$('#gate [data-lang]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        lang = b.dataset.lang; store.set('ps_lang', lang); rerender(); FX.hold = true;
+        document.documentElement.classList.remove('gate-on'); runLoading();
+      });
+    });
+    var first = $('#gate [data-lang]'); if (first) first.focus();
+  } else FX.hideLoader();
 })();

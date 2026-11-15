@@ -24,7 +24,7 @@ window.SITE_CONTENT = {
     learning: [],                   // เช่น ["Rust", "Kotlin"]
     interests: ["Programming", "Python", "Web Development", "Minecraft Development", "Discord Bot Development", "3D Modeling", "Badminton", "Technology"],
     email: "",                      // ถ้ากรอก จะแสดงปุ่มอีเมลในส่วนติดต่อ (เว้นว่างถ้าไม่ต้องการเปิดเผย)
-    socials: [ { label: "GitHub", url: "https://github.com/Potter8899" } ]
+    socials: [ { label: "GitHub", url: "https://github.com/Potter8899" }, { label: "Discord", url: "https://discordapp.com/users/1386368220511993937" } ]
   },
 
   skills: [  // category: programming | development | tools | other  (ไม่มีเปอร์เซ็นต์ — ใส่ได้เฉพาะระดับที่คุณยืนยันเองในช่อง note)
@@ -40,13 +40,7 @@ window.SITE_CONTENT = {
     // { when: "2025", kind: "milestone", title: { th: "...", en: "..." }, body: { th: "", en: "" } },
   ],
 
-  projects: [  // category: website | application | discord_bot | minecraft | ai | experiment   status: live | wip | planned | archived
-    { slug: "ai-song-translate-subtitle", category: "ai", status: "wip", featured: true, cover: "img/www.png", github: "", demo: "", tags: ["Python", "HTML5", "PySide6", "AI"],
-      title:   { th: "ระบบแปลเพลงและเขียนซับด้วย AI", en: "AI Song Translation & Subtitle System" },
-      summary: { th: "ระบบแปลเนื้อเพลงและเขียนซับไตเติลด้วย AI", en: "A system that translates song lyrics and writes subtitles with AI." },
-      body:    { th: "พัฒนาด้วย Python, HTML5 และ PySide6 โดยพัฒนาร่วมกับ Gemini Argon 4 High", en: "Built with Python, HTML5 and PySide6, developed together with Gemini Argon 4 High." },
-      images: [ { src: "img/www.png", caption: { th: "ระบบแปลเพลงและเขียนซับด้วย AI", en: "AI Song Translation & Subtitle System" } } ] }
-  ],
+  projects: [],  // ผลงานย้ายไปแก้ง่ายๆ ที่ js/works.js แล้ว (ช่องนี้ยังใช้ได้ถ้าอยากเขียนแบบเต็ม { th, en })
 
   gallery: [  // category: personal | projects | screenshots | workspace | models | creative
     // { src: "img/gallery/workspace.jpg", category: "workspace", caption: { th: "โต๊ะทำงาน", en: "My desk" } },

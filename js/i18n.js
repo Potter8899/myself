@@ -1,6 +1,7 @@
 /* UI dictionary (Thai / English). Content that the owner writes (projects, blog, profile...) is bilingual in the database. */
 window.I18N = {
   th: {
+    'load.msg': 'กำลังเตรียมจักรวาลของผม…',
     'ct.lead': 'อยากคุยหรือร่วมงานกัน? ติดต่อผมได้ทางช่องทางด้านล่าง',
     skip: 'ข้ามไปเนื้อหา', 'nav.home': 'หน้าแรก', 'nav.about': 'เกี่ยวกับ', 'nav.skills': 'ทักษะ', 'nav.projects': 'ผลงาน', 'nav.gallery': 'แกลเลอรี',
     'nav.blog': 'บล็อก', 'nav.contact': 'ติดต่อ', 'nav.menu': 'เมนู', 'nav.lang': 'เปลี่ยนภาษา',
@@ -25,6 +26,7 @@ window.I18N = {
     'name.full': 'ชื่อ-นามสกุล', 'name.grade': 'ระดับชั้น', 'name.nick': 'ชื่อเล่น', 'sec.files': 'ไฟล์ดาวน์โหลด', download: 'ดาวน์โหลด',
   },
   en: {
+    'load.msg': 'Preparing my universe…',
     'ct.lead': 'Want to talk or work together? Reach me through the links below.',
     skip: 'Skip to content', 'nav.home': 'Home', 'nav.about': 'About', 'nav.skills': 'Skills', 'nav.projects': 'Projects', 'nav.gallery': 'Gallery',
     'nav.blog': 'Blog', 'nav.contact': 'Contact', 'nav.menu': 'Menu', 'nav.lang': 'Switch language',

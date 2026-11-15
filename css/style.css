@@ -172,3 +172,24 @@ body.has-tabs .sec{min-height:60vh;padding-top:36px}
 .lb-prompt p{margin:6px 0;color:#cdd8ee;font-size:.9rem}
 .lb-prompt pre{margin:0;max-height:22vh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:.82rem/1.55 ui-monospace,Consolas,monospace;color:#e8f0ff;user-select:text}
 .lb.has-prompt img{max-height:48vh}.lb.has-prompt .sheet,.lb.has-prompt figure{max-height:96vh;overflow-y:auto}
+
+/* ---- language gate (first visit) + loading screen */
+#gate{display:none;position:fixed;inset:0;z-index:110;place-content:center;text-align:center;padding:24px;background:radial-gradient(60% 50% at 50% 40%,rgba(22,75,255,.22),transparent 70%),rgba(5,6,9,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.gate-on #gate{display:grid;animation:lfade .5s}
+html.gate-on #loader{display:none}
+.gate-box{width:min(520px,100%)}
+.gate-logo{font:700 1.6rem var(--display);letter-spacing:.28em;margin:0 0 10px}.gate-logo span{color:var(--red)}
+.gate-title{color:var(--muted);margin:0 0 28px;font-size:1.05rem}.gate-title i{font-style:normal;color:var(--cyan);padding:0 .3em}
+.gate-btns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gate-btn{display:grid;gap:4px;padding:26px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--glass);color:#fff;cursor:pointer;font:inherit;transition:transform .25s,border-color .25s,box-shadow .25s}
+.gate-btn b{font:500 1.35rem var(--display)}.gate-btn small{color:var(--muted)}
+.gate-btn:hover,.gate-btn:focus-visible{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 0 30px rgba(0,217,255,.35)}
+#loader{animation:lfade .35s}
+@keyframes lfade{from{opacity:0}}
+#loader p{margin:0 0 18px}
+.lbar{width:min(280px,70vw);height:4px;margin:0 auto 12px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.lbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--red),var(--cyan));box-shadow:0 0 14px var(--cyan)}
+#loader small{display:block;letter-spacing:.12em;color:var(--muted);font-family:var(--body)}
+#loadPct{font-family:var(--display)!important;color:#fff!important;margin-bottom:4px}
+@media (max-width:420px){.gate-btns{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html.gate-on #gate,#loader{animation:none}.gate-btn{transition:none}}
