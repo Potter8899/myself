@@ -7,7 +7,7 @@
 window.MEDIA = {
 
   // 1) รูปโปรไฟล์ (รูปใหญ่ในหน้าแรก) — วางไฟล์ไว้ที่ img/ แล้วใส่ชื่อ
-  profilePhoto: "img/profile.jpg",
+  profilePhoto: "img/www.png",
 
   // 1.1) พรอมต์ที่ใช้ทำรูปโปรไฟล์ — จะแสดงตอนคนกดดูรูปโปรไฟล์ (เว้นว่าง "" ถ้าไม่ต้องการแสดง)
   profilePrompt: `Use the uploaded face photo as the identity reference. Create an ultra-realistic full-body mirror selfie matching the reference image as closely as possible.

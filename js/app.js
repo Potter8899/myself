@@ -126,7 +126,7 @@
   function renderHero() {
     var name = P.name || 'Potter'; if ($('#heroName').getAttribute('aria-label') !== name.toUpperCase()) FX.split($('#heroName'), name.toUpperCase());
     $('#intro').textContent = L(P.intro) || t('hero.sub'); $('#tagline').textContent = L(P.tagline);
-    var img = $('#profileImg'), src = imgSrc(M.profilePhoto) || imgSrc(P.photo) || 'img/profile.jpg'; if (img.getAttribute('src') !== src) img.src = src; img.alt = t('hero.cardAlt') + ' ' + name; document.title = pageTitle();
+    var img = $('#profileImg'), src = imgSrc(M.profilePhoto) || imgSrc(P.photo) || 'img/www.png'; if (img.getAttribute('src') !== src) img.src = src; img.alt = t('hero.cardAlt') + ' ' + name; document.title = pageTitle();
   }
   function renderNameCard() {
     var box = clear($('#nameCard'));
