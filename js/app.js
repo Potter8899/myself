@@ -22,7 +22,9 @@
   var imgSrc = function (u) { return /^(https:\/\/[^\s<>"']+|img\/[A-Za-z0-9_./-]+)$/.test(u || '') ? u : ''; };
 
   // ---- i18n
-  var LANGS = ['th', 'en', 'ru'], nlang = (navigator.language || '').toLowerCase(), lang = LANGS.indexOf(store.get('ps_lang')) >= 0 ? store.get('ps_lang') : (nlang.indexOf('th') === 0 ? 'th' : nlang.indexOf('ru') === 0 ? 'ru' : 'en');
+  // ล้างภาษาที่บันทึกไว้ทุกครั้งที่โหลดหน้าใหม่ — gate จะแสดงทุกครั้ง
+  store.set('ps_lang', '');
+  var LANGS = ['th', 'en', 'ru'], nlang = (navigator.language || '').toLowerCase(), lang = nlang.indexOf('th') === 0 ? 'th' : nlang.indexOf('ru') === 0 ? 'ru' : 'en';
   function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
   function L(o) { return (o && (o[lang] || o.en || o.th)) || ''; }
   function fmtDate(s) { try { return new Intl.DateTimeFormat(lang === 'th' ? 'th-TH' : lang === 'ru' ? 'ru-RU' : 'en-GB', { dateStyle: 'medium' }).format(new Date(s)); } catch (e) { return ''; } }

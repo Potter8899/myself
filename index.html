@@ -22,7 +22,7 @@ var ipad=/iPad/.test(ua)||(n.platform==="MacIntel"&&tp>1),androidTab=/Android/i.
 phone=(uad&&typeof uad.mobile==="boolean"&&uad.mobile)||/iPhone|iPod|Android.+Mobile|Windows Phone|Mobile Safari|Opera Mini|IEMobile/i.test(ua),
 small=Math.min(screen.width||9999,screen.height||9999)<600,type=ipad||androidTab||/Tablet/i.test(ua)?"tablet":(phone||(coarse&&tp>0&&small)?"mobile":"desktop");
 d.setAttribute("data-device",type);if(type!=="desktop"||(coarse&&tp>0))d.classList.add("touch");window.DEVICE={type:type,touch:d.classList.contains("touch")};})();</script>
-<script>(function(){try{if(!localStorage.getItem("ps_lang")||/[?&]gate(=|&|$)/.test(location.search))document.documentElement.classList.add("gate-on")}catch(e){document.documentElement.classList.add("gate-on")}})();</script>
+<script>(function(){document.documentElement.classList.add("gate-on");})();</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Potter","url":"__SITE_URL__/","sameAs":["https://github.com/Potter8899"],"jobTitle":"Developer"}</script>
 </head>
 <body>
