@@ -126,7 +126,7 @@
   function renderHero() {
     var name = P.name || 'Potter'; if ($('#heroName').getAttribute('aria-label') !== name.toUpperCase()) FX.split($('#heroName'), name.toUpperCase());
     $('#intro').textContent = L(P.intro) || t('hero.sub'); $('#tagline').textContent = L(P.tagline);
-    var img = $('#profileImg'), src = imgSrc(M.profilePhoto) || imgSrc(P.photo) || 'img/www.png'; if (img.getAttribute('src') !== src) img.src = src; img.alt = t('hero.cardAlt') + ' ' + name; document.title = pageTitle();
+    var img = $('#profileImg'), src = imgSrc(M.profilePhoto) || imgSrc(P.photo) || 'img/profile.jpg'; if (img.getAttribute('src') !== src) img.src = src; img.alt = t('hero.cardAlt') + ' ' + name; document.title = pageTitle();
   }
   function renderNameCard() {
     var box = clear($('#nameCard'));
@@ -181,7 +181,7 @@
     var rows = projects.filter(function (p) { return (!S.projCat || p.category === S.projCat) && (!q || words(L(p.title) + ' ' + L(p.summary) + ' ' + (p.tags || []).join(' ')).indexOf(q) >= 0); });
     if (!rows.length) state(box, q || S.projCat ? t('noResult') : t('empty'));
     rows.slice(0, S.projShown).forEach(function (p) {
-      var title = L(p.title), cv = imgSrc(p.cover), cover = el('div', { class: 'cover' }, cv ? [el('img', { src: cv, alt: '', loading: 'lazy', decoding: 'async' })] : [title.charAt(0).toUpperCase()]);
+      var title = L(p.title), cv = imgSrc(p.cover), cover = el('div', { class: 'cover' }, cv ? [el('img', { src: cv, alt: '', loading: 'lazy', decoding: 'async', on: { error: function () { var c = this.parentNode; this.remove(); c.textContent = title.charAt(0).toUpperCase(); } } })] : [title.charAt(0).toUpperCase()]);
       var acts = [el('a', { class: 'btn small', href: '#/project/' + p.slug, text: t('details') })];
       if (httpsOnly(p.github)) acts.push(el('a', { class: 'btn small', href: p.github, target: '_blank', rel: 'noopener noreferrer', text: t('github') }));
       if (httpsOnly(p.demo)) acts.push(el('a', { class: 'btn small', href: p.demo, target: '_blank', rel: 'noopener noreferrer', text: t('demo') }));
@@ -199,7 +199,7 @@
     var p = S.proj, sh = clear($('#projSheet')); if (!p) return;
     var imgs = (p.images || []).filter(function (x) { return imgSrc(x.src); }), list = imgs.map(function (x) { return { src: x.src, alt: L(x.caption), caption: L(x.caption) }; });
     sh.appendChild(el('button', { type: 'button', class: 'x', 'aria-label': t('close'), text: '✕', on: { click: function () { closeAny($('#projModal')); } } }));
-    if (imgSrc(p.cover)) sh.appendChild(el('img', { class: 'hero-img', src: p.cover, alt: '' }));
+    if (imgSrc(p.cover)) sh.appendChild(el('img', { class: 'hero-img', src: p.cover, alt: '', on: { error: function () { this.remove(); } } }));
     sh.appendChild(el('h2', { id: 'pmTitle', text: L(p.title) }));
     sh.appendChild(el('div', { class: 'meta chips' }, [el('span', { class: 'st', data: { s: p.status }, text: t('status.' + p.status) }), el('span', { class: 'chip', text: t('pcat.' + p.category) })].concat((p.tags || []).map(function (x) { return el('span', { class: 'chip', text: x }); }))));
     if (L(p.summary)) sh.appendChild(el('p', { class: 'lead', text: L(p.summary) }));

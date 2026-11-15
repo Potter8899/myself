@@ -25,7 +25,7 @@
 
 | อยากเพิ่ม | วางไฟล์ที่ | เพิ่มใน `js/media.js` |
 |---|---|---|
-| รูปโปรไฟล์ (รูปใหญ่หน้าแรก) | `img/www.png` | `profilePhoto: "img/www.png",` |
+| รูปโปรไฟล์ (รูปใหญ่หน้าแรก) | `img/profile.jpg` | `profilePhoto: "img/profile.jpg",` |
 | รูปแกลเลอรี | `img/gallery/` | `"img/gallery/a.jpg",` หรือ `{ src: "img/gallery/b.jpg", caption: "ห้องของผม" },` ในช่อง `gallery` |
 | ไฟล์ให้คนโหลด (zip, pdf, jar) | `files/` | `{ name: "ม็อดของผม v1", file: "files/my-mod-v1.zip", note: "สำหรับ 1.20.1" },` ในช่อง `files` |
 
@@ -53,7 +53,7 @@ files: [
 
 ## แก้เนื้อหา
 แก้ไฟล์เดียวคือ **`js/content.js`** (มีคอมเมนต์อธิบายทุกช่อง): ชื่อ/แนะนำตัว/เกี่ยวกับ, ทักษะ, ไทม์ไลน์, แกลเลอรี, บล็อก (Markdown), ลิงก์โซเชียล/อีเมล · ข้อความสองภาษาเขียนเป็น `{ th: "...", en: "..." }` ช่องที่เว้นว่างจะถูกซ่อน
-- **รูปโปรไฟล์**: วางรูปจริงของคุณเป็น `img/www.png` (ไม่มีรูป → แสดงตัวอักษร P และไม่เปิด lightbox) ผมไม่ได้สร้างรูปบุคคลให้
+- **รูปโปรไฟล์**: วางรูปจริงของคุณเป็น `img/profile.jpg` (ไม่มีรูป → แสดงตัวอักษร P และไม่เปิด lightbox) ผมไม่ได้สร้างรูปบุคคลให้
 - รูปอื่น: วางใน `img/` แล้วใส่ path (เช่น `img/gallery/desk.jpg`) หรือลิงก์ `https://` · แนะนำไฟล์ WebP/JPG ขนาดไม่ใหญ่เกินไป
 - ลิงก์ภายนอกรับเฉพาะ `https://` (อย่างอื่นจะไม่ถูกแสดง) · บล็อกที่ตั้ง `status: "draft"` จะไม่แสดง
 - ข้อมูลเริ่มต้นมีเฉพาะที่ได้มาจากโปรเจกต์เดิมและรายการที่คุณระบุ ไม่มีประวัติ/ความสำเร็จ/เปอร์เซ็นต์ทักษะที่แต่งขึ้น
@@ -68,7 +68,7 @@ files: [
 4. URL เว็บจะแสดงในหน้า Actions ของรอบนั้น (ปกติ `https://ชื่อผู้ใช้.github.io/ชื่อrepo/` หรือถ้าตั้งชื่อ repo เป็น `ชื่อผู้ใช้.github.io` จะได้ `https://ชื่อผู้ใช้.github.io/`)
 - workflow ใส่ canonical URL / Open Graph / sitemap ให้อัตโนมัติจาก URL จริง (ไม่ต้องรัน `set-site-url.sh` เอง) และเผยแพร่เฉพาะไฟล์ที่ผู้เข้าชมต้องใช้ (ไม่รวม tests/ และ .github/)
 - ทุก path ในเว็บเป็นแบบสัมพัทธ์ จึงใช้ได้ทั้งที่ราก (`/`) และใต้ชื่อ repo (`/ชื่อrepo/`) · ใช้โดเมนของตัวเองได้ผ่าน Settings → Pages → Custom domain
-- `img/www.png` เป็นไฟล์เสริม: ยังไม่ใส่ก็ deploy ได้ (จะแสดงตัวอักษร P) · `.github/dependabot.yml` จะเปิด PR เตือนเมื่อ action ที่ใช้มีเวอร์ชันใหม่ (workflow ปักไว้ที่ checkout@v4, configure-pages@v5, upload-pages-artifact@v3, deploy-pages@v4)
+- `img/profile.jpg` เป็นไฟล์เสริม: ยังไม่ใส่ก็ deploy ได้ (จะแสดงตัวอักษร P) · `.github/dependabot.yml` จะเปิด PR เตือนเมื่อ action ที่ใช้มีเวอร์ชันใหม่ (workflow ปักไว้ที่ checkout@v4, configure-pages@v5, upload-pages-artifact@v3, deploy-pages@v4)
 - **หมายเหตุ**: `robots.txt` ใต้ชื่อ repo (`/repo/robots.txt`) เสิร์ชเอนจินไม่อ่าน (ต้องอยู่ที่รากโดเมน) แต่ไม่ทำให้เว็บใช้งานไม่ได้ · ถ้า deploy ไม่ขึ้น ให้ดูใน Actions ว่าล้มที่ขั้นไหน และตรวจว่าเลือก Source = GitHub Actions แล้ว
 
 ## เผยแพร่ที่อื่น
