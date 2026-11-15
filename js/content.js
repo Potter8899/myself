@@ -41,13 +41,11 @@ window.SITE_CONTENT = {
   ],
 
   projects: [  // category: website | application | discord_bot | minecraft | ai | experiment   status: live | wip | planned | archived
-    { slug: "deadzone-server-tools", category: "minecraft", status: "live", featured: true, cover: "", github: "", demo: "", tags: ["Forge", "Java", "GeckoLib"],
-      title: { th: "DeadZone Server Tools", en: "DeadZone Server Tools" }, summary: { th: "ม็อดและปลั๊กอินสำหรับเซิร์ฟเวอร์ Minecraft 1.20.1", en: "Mods and plugins for a Minecraft 1.20.1 server." },
-      body: { th: "", en: "" }, images: [] /* [{ src: "img/shot1.png", caption: { th: "", en: "" } }] */ },
-    { slug: "discord-ticket-bot", category: "discord_bot", status: "live", featured: true, cover: "", github: "", demo: "", tags: ["Python", "discord.py", "Supabase"],
-      title: { th: "Discord Ticket Bot", en: "Discord Ticket Bot" }, summary: { th: "ระบบตั๋วสองทางเชื่อมเว็บไซต์แบบเรียลไทม์", en: "A two-way ticket system connected to the website in near real time." }, body: { th: "", en: "" }, images: [] },
-    { slug: "3d-models", category: "minecraft", status: "live", featured: false, cover: "", github: "", demo: "", tags: ["Blockbench", "Animation"],
-      title: { th: "3D Models", en: "3D Models" }, summary: { th: "โมเดลและแอนิเมชันสำหรับ Minecraft", en: "Models and animations for Minecraft." }, body: { th: "", en: "" }, images: [] }
+    { slug: "ai-song-translate-subtitle", category: "ai", status: "wip", featured: true, cover: "img/www.png", github: "", demo: "", tags: ["Python", "HTML5", "PySide6", "AI"],
+      title:   { th: "ระบบแปลเพลงและเขียนซับด้วย AI", en: "AI Song Translation & Subtitle System" },
+      summary: { th: "ระบบแปลเนื้อเพลงและเขียนซับไตเติลด้วย AI", en: "A system that translates song lyrics and writes subtitles with AI." },
+      body:    { th: "พัฒนาด้วย Python, HTML5 และ PySide6 โดยพัฒนาร่วมกับ Gemini Argon 4 High", en: "Built with Python, HTML5 and PySide6, developed together with Gemini Argon 4 High." },
+      images: [ { src: "img/www.png", caption: { th: "ระบบแปลเพลงและเขียนซับด้วย AI", en: "AI Song Translation & Subtitle System" } } ] }
   ],
 
   gallery: [  // category: personal | projects | screenshots | workspace | models | creative
