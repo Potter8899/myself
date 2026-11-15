@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potter — Personal Space</title>
+<meta name="description" content="Potter's personal space: developer portfolio, projects and devlog. พื้นที่ส่วนตัวของ Potter นักพัฒนา เว็บ บอท ม็อด Minecraft และโมเดล 3D">
+<link rel="canonical" href="__SITE_URL__/">
+<meta property="og:type" content="website"><meta property="og:title" content="Potter — Personal Space">
+<meta property="og:description" content="Welcome to my digital universe.">
+<meta property="og:url" content="__SITE_URL__/"><meta property="og:image" content="__SITE_URL__/img/profile.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Potter — Personal Space">
+<meta name="twitter:description" content="Welcome to my digital universe.">
+<meta name="theme-color" content="#050609">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Potter","url":"__SITE_URL__/","sameAs":["https://github.com/Potter8899"],"jobTitle":"Developer"}</script>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<div id="loader" aria-hidden="true"><div class="ring"></div><p>POTTER</p></div>
+<canvas id="space" aria-hidden="true"></canvas><div class="nebula" aria-hidden="true"></div><div class="grid" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"></div>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+<header class="nav glass" id="nav">
+  <a href="#top" class="logo" data-nav="top">POTTER<span>.</span></a>
+  <nav id="navLinks" aria-label="Main">
+    <a href="#top" data-nav="top" data-i18n="nav.home">Home</a><a href="#about" data-nav="about" data-i18n="nav.about">About</a>
+    <a href="#skills" data-nav="skills" data-i18n="nav.skills">Skills</a><a href="#projects" data-nav="projects" data-i18n="nav.projects">Projects</a>
+    <a href="#gallery" data-nav="gallery" data-i18n="nav.gallery">Gallery</a><a href="#blog" data-nav="blog" data-i18n="nav.blog">Blog</a>
+    <a href="#contact" data-nav="contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+  <div class="nav-tools">
+    <button class="btn small" id="langBtn" type="button" data-i18n-aria="nav.lang" aria-label="Switch language">EN</button>
+    <button class="burger" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks" data-i18n-aria="nav.menu" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section id="top" class="hero">
+  <div class="hero-text">
+    <p class="hello"><span data-i18n="hero.hello">Hello, I'm</span></p>
+    <h1 id="heroName" class="split">POTTER</h1>
+    <p class="welcome" data-i18n="hero.welcome">Welcome to my digital universe.</p>
+    <p class="lead" id="intro" data-i18n="hero.sub"></p>
+    <p class="tagline" id="tagline"></p>
+    <div class="cta"><a href="#contact" class="btn primary mag" data-nav="contact" data-i18n="hero.cta1">Contact me</a><a href="#projects" class="btn mag" data-nav="projects" data-i18n="hero.cta2">See my work</a></div>
+  </div>
+  <figure class="tilt-wrap">
+    <div class="orbit" aria-hidden="true"><i></i><i></i></div>
+    <button class="tilt" id="profileCard" type="button" data-i18n-aria="hero.card" aria-label="Enlarge profile photo">
+      <img id="profileImg" src="img/profile.jpg" alt="" width="420" height="520" fetchpriority="high" decoding="async">
+      <span class="fallback" id="fallback" hidden>P</span><span class="shade"></span><span class="glare"></span>
+    </button>
+  </figure>
+</section>
+
+<section class="strip" aria-label="Highlights">
+  <div class="glass pad"><h3 data-i18n="strip.interests">Interested in right now</h3><div class="chips" id="stripInterests"></div></div>
+  <div class="glass pad"><h3 data-i18n="strip.latest">Latest update</h3><div id="stripLatest"></div></div>
+  <div class="glass pad"><h3 data-i18n="strip.find">Find me</h3><div class="chips" id="stripSocial"></div></div>
+</section>
+
+<section id="about" class="sec"><h2 data-i18n="sec.about">About me</h2><div id="aboutBody" class="about-grid"></div>
+  <h3 class="sub" data-i18n="sec.timeline">Development timeline</h3><ol id="timelineList" class="timeline"></ol></section>
+
+<section id="skills" class="sec"><h2 data-i18n="sec.skills">Skills & technology</h2><div class="chips filter" id="skillFilter" role="group"></div><div id="skillList" class="skill-cols"></div></section>
+
+<section id="projects" class="sec"><h2 data-i18n="sec.projects">Projects</h2>
+  <div class="toolbar"><input id="projQ" type="search" maxlength="60" data-i18n-ph="search" placeholder="Search…" aria-label="Search projects"><div class="chips filter" id="projCats" role="group"></div></div>
+  <div id="projList" class="proj-grid"></div><div class="more"><button class="btn" id="projMore" type="button" hidden data-i18n="loadMore">Load more</button></div></section>
+
+<section id="gallery" class="sec"><h2 data-i18n="sec.gallery">Gallery</h2><div class="chips filter" id="galCats" role="group"></div>
+  <div id="galList" class="masonry"></div><div class="more"><button class="btn" id="galMore" type="button" hidden data-i18n="loadMore">Load more</button></div></section>
+
+<section id="blog" class="sec"><h2 data-i18n="sec.blog">Blog & Devlog</h2>
+  <div class="toolbar"><input id="blogQ" type="search" maxlength="60" data-i18n-ph="search" placeholder="Search…" aria-label="Search posts"><div class="chips filter" id="blogCats" role="group"></div></div>
+  <div id="blogList" class="blog-list"></div><div class="pager" id="blogPager"></div></section>
+
+<section id="contact" class="sec"><h2 data-i18n="sec.contact">Contact</h2>
+  <div class="glass pad contact-side"><p class="lead" data-i18n="ct.lead"></p><div class="chips" id="contactLinks"></div></div></section>
+</main>
+
+<footer class="foot"><span>© <span id="year"></span> Potter · <span data-i18n="foot.rights">All rights reserved</span></span></footer>
+
+<div id="projModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="pmTitle"><article class="glass sheet" id="projSheet"></article></div>
+<div id="reader" class="modal reader" hidden role="dialog" aria-modal="true" aria-labelledby="rdTitle"><article class="glass sheet" id="readerSheet"></article></div>
+
+<div id="lightbox" class="modal lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button type="button" class="x" data-close data-i18n-aria="close" aria-label="Close">✕</button>
+  <button type="button" class="nav-arrow prev" id="lbPrev" aria-label="Previous">‹</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button type="button" class="nav-arrow next" id="lbNext" aria-label="Next">›</button>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="js/content.js"></script><script src="js/i18n.js"></script><script src="js/md.js"></script><script src="js/fx.js"></script><script src="js/app.js"></script>
+</body></html>
